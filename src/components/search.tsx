@@ -1,36 +1,34 @@
 "use client";
 
-import { ChangeEvent, useEffect, useState } from "react";
+import { ChangeEvent, useEffect } from "react";
 import countryData from "@/lib/globe.json";
 import { useRouter } from 'next/navigation';
+import { useSelectedCountry } from '@/lib/selected-country-context';
+import { ImCancelCircle } from "react-icons/im";
 
-export default function Search({valueFromMap}: {valueFromMap:string}) {
-    const [value, setValue] = useState("");
+export default function Search() {
+    const { selectedCountry, setSelectedCountry } = useSelectedCountry();
     const router = useRouter();
 
     const countries = countryData.features.map(({ properties }) => (
             properties.name
     ));
 
-    const selectedCountry = countries.find((country) =>
-                            country.toLowerCase() === value?.toLowerCase());
-
-    useEffect(() => {
-        setValue(valueFromMap);
-    }, [valueFromMap]);
+    const countryPicked = countries.find((country) =>
+                            country.toLowerCase() === selectedCountry?.toLowerCase());
 
     useEffect(() => {
         const element = document.getElementById("home-2");
-        if (selectedCountry) {
-            router.push(`/#country=${encodeURIComponent(selectedCountry)}`);
-            selectedCountry && setTimeout(() => {
+        if (countryPicked) {
+            router.push(`/#country=${encodeURIComponent(countryPicked)}`);
+            countryPicked && setTimeout(() => {
                 element?.scrollIntoView({ behavior: 'smooth' });
               }, 100);
         }
-    }, [selectedCountry, router]);
+    }, [countryPicked, router]);
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
-        setValue(e.target.value);
+        setSelectedCountry(e.target.value);
      };
 
   return (
@@ -40,21 +38,32 @@ export default function Search({valueFromMap}: {valueFromMap:string}) {
             id="search"
             list="countries"
             placeholder=" Search for country..."
-            value={value}
+            value={selectedCountry}
             onChange={(e) => handleChange(e)}
             className="w-full rounded-lg border border-black py-2.5 pl-1 shadow-sm sm:text-sm dark:border-gray-700 dark:bg-gray-800 dark:text-white"
         />
+        {selectedCountry &&
+            <span className="absolute inset-y-0 end-0 grid w-10 place-content-center">
+                <button
+                    type="button"
+                    className="text-gray-600 hover:text-gray-700"
+                    onClick={() => setSelectedCountry("")}
+                >
+                     <ImCancelCircle />
+                </button>
+            </span>
+        }
 
-        {value && !countries.includes(value) &&
+        {selectedCountry && !countries.includes(selectedCountry) &&
             <ul className="absolute z-10 bg-white border border-gray-300 rounded-lg mt-1 w-full">
             {
                 countries.filter((country) => (
-                    country.toLowerCase().startsWith(value?.toLowerCase())
+                    country.toLowerCase().startsWith(selectedCountry?.toLowerCase())
                 )).slice(0,20).map((country) => (
                     <li
                         key={country}
                         className="px-3 py-2 hover:bg-gray-100 cursor-pointer"
-                        onClick={() => setValue(country)}
+                        onClick={() => setSelectedCountry(country)}
                     >
                         {country}
                     </li>

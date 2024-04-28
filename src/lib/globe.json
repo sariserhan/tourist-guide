@@ -8502,7 +8502,7 @@
         "currency_code": "NOK",
         "life_expectancy": null,
         "national_dish": null,
-        "population": 0,
+        "population": null,
         "region": "Antarctica",
         "surface_area": 59,
         "yearly_avg_temperature": null

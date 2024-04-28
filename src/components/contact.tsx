@@ -1,5 +1,7 @@
+import Link from "next/link"
 import Globe from "./globe"
 import Logo from "./logo"
+import Image from "next/image"
 
 const Contact = () => {
   return (
@@ -66,11 +68,18 @@ const Contact = () => {
                 </div>
             </div>
         </div>
-        <footer className=' z-50 flex'>
-            <div className="fixed left-0 bottom-5">
-                <Logo />
+        <footer className='justify-center items-center'>
+            <div className="z-50 absolute right-0 bottom-2 ">
+                <Link href="/">
+                    <Image
+                        src={'/logo.png'}
+                        alt="logo"
+                        width={80}
+                        height={80}
+                    />
+                </Link>
             </div>
-            <div className="fixed bottom-1">
+            <div className="absolute bottom-2 left-1">
                 <p className="mt-4 text-center text-sm text-gray-500 lg:mt-0 lg:text-right">
                     Copyright &copy; 2024. All rights reserved.
                 </p>

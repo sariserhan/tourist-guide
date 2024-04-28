@@ -2,17 +2,17 @@
 
 import { useState } from 'react';
 import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps";
-import globData from "@/lib/globe.json";
+import globeData from "@/lib/globe.json";
 import capitalOfCountries from "@/lib/capital.json";
 import Layout from './background-layout';
 import Search from './search';
 import { useRouter } from 'next/navigation';
-import Logo from './logo';
-
+// import Logo from './logo';
+import { useSelectedCountry } from '@/lib/selected-country-context';
 
 const WorldMap = () => {
   const [tooltip, setTooltip] = useState({ content: '', x: 0, y: 0, visible: false });
-  const [valueFromMap, setValueFromMap] = useState('');
+  const { selectedCountry, setSelectedCountry } = useSelectedCountry();
   const router = useRouter();
 
   const handleMouseMove = ({ pageX, pageY }: {pageX:number, pageY:number}) => {
@@ -37,20 +37,20 @@ const WorldMap = () => {
         element?.scrollIntoView({ behavior: 'smooth' });
       }, 100);
       router.push(`/#country=${encodeURIComponent(country)}`);
-      setValueFromMap(country);
+      setSelectedCountry(country);
     }
 
   return (
     <Layout image="url('/ocean2.jpg')">
       <section id="home-1" className='flex flex-col h-[70rem] items-center justify-center backdrop-filter backdrop-blur-xl'>
-        <div className='fixed left-0 top-5 z-50'>
+        {/* <div className='fixed left-0 top-5 z-50'>
             <Logo />
-        </div>
+        </div> */}
         <div className='absolute top-10 z-50'>
-          <Search valueFromMap={valueFromMap}/>
+          <Search />
         </div>
           <ComposableMap className=' w-full mx-10 invisible sm:visible' onMouseMove={handleMouseMove}>
-            <Geographies geography={globData}>
+            <Geographies geography={globeData}>
               {({ geographies }) =>
                 geographies.map(geo => (
                   <Geography

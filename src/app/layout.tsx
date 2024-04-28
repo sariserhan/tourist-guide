@@ -34,7 +34,13 @@ function NavBar() {
       // icon: <IconUser className="h-4 w-4 text-neutral-500 dark:text-white" />,
     },
     {
-      name: "Contact",
+      name: "Forum",
+      link: "/",
+      // icon: <IconMessage className="h-4 w-4 text-neutral-500 dark:text-white" />
+
+    },
+    {
+      name: "Offers",
       link: "/",
       // icon: <IconMessage className="h-4 w-4 text-neutral-500 dark:text-white" />
 
