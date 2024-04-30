@@ -1,5 +1,4 @@
-import { IoIosTimer } from "react-icons/io";
-import { IoBedOutline, IoFastFoodOutline } from "react-icons/io5";
+import { IoFastFoodOutline } from "react-icons/io5";
 import { FaPeopleGroup, FaTemperatureHigh, FaPhoneFlip, FaLandmarkFlag, FaLanguage } from "react-icons/fa6";
 import { RiGovernmentFill } from "react-icons/ri";
 import { GiAfrica, GiSouthAmerica, GiAustralia, GiEuropeanFlag } from "react-icons/gi";

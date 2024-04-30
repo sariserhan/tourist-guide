@@ -11,7 +11,7 @@ import { useRouter } from 'next/navigation';
 import { useSelectedCountry } from '@/lib/selected-country-context';
 
 const WorldMap = () => {
-  const [tooltip, setTooltip] = useState({ content: '', x: 0, y: 0, visible: false });
+  const [tooltip, setTooltip] = useState({ content: "", x: 0, y: 0, visible: false });
   const { selectedCountry, setSelectedCountry } = useSelectedCountry();
   const router = useRouter();
 
