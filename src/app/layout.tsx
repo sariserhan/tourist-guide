@@ -1,7 +1,17 @@
+import ConvexClientProvider from "@/providers/convex-client-provider";
+import Logo from "@/components/logo";
+import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
-import "./globals.css";
 import { FloatingNav } from "@/components/ui/floating-navbar";
+import { Button } from '@/components/ui/button';
+import { Toaster } from "@/components/ui/toaster"
+import {
+  SignInButton,
+  SignedIn,
+  SignedOut,
+  UserButton
+} from '@clerk/nextjs'
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -18,8 +28,22 @@ export default function RootLayout({
   return (
     <html lang="en">
       <body className={`${inter.className}`}>
-        <NavBar />
-        {children}
+        <div className='absolute left-0 top-5 z-50'>
+          <Logo />
+        </div>
+        <ConvexClientProvider>
+          <NavBar />
+          <div className='absolute right-5 top-7 z-50'>
+            <SignedOut>
+              <Button variant="secondary" className='hover:cursor-pointer'><SignInButton /></Button>
+            </SignedOut>
+            <SignedIn>
+              <UserButton />
+            </SignedIn>
+          </div>
+            {children}
+          <Toaster />
+        </ConvexClientProvider>
       </body>
     </html>
   );
@@ -32,12 +56,6 @@ function NavBar() {
       name: "About",
       link: "/",
       // icon: <IconUser className="h-4 w-4 text-neutral-500 dark:text-white" />,
-    },
-    {
-      name: "Forum",
-      link: "/",
-      // icon: <IconMessage className="h-4 w-4 text-neutral-500 dark:text-white" />
-
     },
     {
       name: "Offers",

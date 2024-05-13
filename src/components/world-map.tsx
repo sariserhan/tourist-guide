@@ -5,15 +5,12 @@ import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps
 import globeData from "@/lib/globe.json";
 import capitalOfCountries from "@/lib/capital.json";
 import Layout from './background-layout';
-import Search from './search';
-import { useRouter } from 'next/navigation';
-// import Logo from './logo';
-import { useSelectedCountry } from '@/lib/selected-country-context';
+import {SearchCountry, SearchCity} from './search';
+import { useSelectedCountry } from '@/providers/selected-country-provider';
 
 const WorldMap = () => {
   const [tooltip, setTooltip] = useState({ content: "", x: 0, y: 0, visible: false });
-  const { selectedCountry, setSelectedCountry } = useSelectedCountry();
-  const router = useRouter();
+  const { selectedCountry, setSelectedCountry, selectedCity, countryData } = useSelectedCountry();
 
   const handleMouseMove = ({ pageX, pageY }: {pageX:number, pageY:number}) => {
     // Offset values can be adjusted to position the tooltip as desired
@@ -32,22 +29,15 @@ const WorldMap = () => {
   };
 
     const handleClick = (country: string) => {
-      const element = document.getElementById("home-2");
-      setTimeout(() => {
-        element?.scrollIntoView({ behavior: 'smooth' });
-      }, 100);
-      router.push(`/#country=${encodeURIComponent(country)}`);
       setSelectedCountry(country);
     }
+
 
   return (
     <Layout image="url('/ocean2.jpg')">
       <section id="home-1" className='flex flex-col h-[70rem] items-center justify-center backdrop-filter backdrop-blur-xl'>
-        {/* <div className='fixed left-0 top-5 z-50'>
-            <Logo />
-        </div> */}
-        <div className='absolute top-10 z-50'>
-          <Search />
+        <div className='absolute top-10 z-50 flex space-x-5'>
+          <SearchCountry />
         </div>
           <ComposableMap className=' w-full mx-10 invisible sm:visible' onMouseMove={handleMouseMove}>
             <Geographies geography={globeData}>
@@ -57,7 +47,7 @@ const WorldMap = () => {
                     className="cursor-pointer"
                     key={geo.rsmKey}
                     geography={geo}
-                    fill="#000"
+                    // fill="#1"
                     stroke="#000"
                     strokeWidth={0.2}
                     onMouseEnter={({ pageX, pageY }) => {
@@ -70,7 +60,7 @@ const WorldMap = () => {
                     onClick={() => handleClick(geo.properties.name)}
                     style={{
                       default: { fill: "#E7E6E1", outline: 100 },
-                      hover: { fill: "#F53", outline: 100 },
+                      hover: { fill: "#F53", outline: 100},
                       pressed: { fill: "#000", outline: 100 },
                     }}
                   />

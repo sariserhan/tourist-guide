@@ -204,7 +204,7 @@ const Stats = (stats: StatsProps) => {
                 </div>
             </article>
             }
-            {stats.cities &&
+            {/* {stats.cities &&
             <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-gray-100">
                 <span className="p-3 rounded-full border text-stone-400">
                     <GiModernCity size={30}/>
@@ -220,7 +220,7 @@ const Stats = (stats: StatsProps) => {
                     </ScrollArea>
                 </div>
             </article>
-            }
+            } */}
             </div>
         </div>
     )

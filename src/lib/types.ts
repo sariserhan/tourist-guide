@@ -1,19 +1,25 @@
-type StatsProps = {
-    id?: string
-    name: string
-    capital: string
-    calling_code: number
-    government: string
-    cities: string[]
-    life_expectancy: number
-    national_dish: string
-    population: number
-    religion: string
-    region: string
-    surface_area: number
-    yearly_avg_temperature: number
-    continent: string
-    currency: string
-    languages: string[]
-    currency_code: string
+export type ForumCategoriesProps = {
+    country: string;
+    city: string;
+    category: "general" | "cuisine-food" | "attractions-sightseeing" | "accommodation" | "transportation" | "language-communication" | "visa-entry" | "safety-health" | "currency-money" | "culture-customs" | "climate-weather" | "promotions";
+}
+
+export type ForumCardProps = ForumCategoriesProps & {
+    title: string;
+    article: string;
+    createdBy: string;
+    userImageUrl: string;
+};
+
+export type PostProps = ForumCardProps & {
+    likes: number;
+    disLikes: number;
+    _creationTime: string;
+}
+
+export type PostPropsWithId = ForumCardProps & {
+    _id: string;
+    likes: number;
+    disLikes: number;
+    _creationTime: string;
 }
