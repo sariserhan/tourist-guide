@@ -1,4 +1,20 @@
 {
     "WillLuke.nextjs.addTypesOnSave": true,
-    "WillLuke.nextjs.hasPrompted": true
+    "WillLuke.nextjs.hasPrompted": true,
+    "cSpell.words": [
+        "clsx",
+        "Downvote",
+        "downvoted",
+        "drei",
+        "hookform",
+        "lucide",
+        "nextjs",
+        "nextui",
+        "svix",
+        "tailwindcss",
+        "uploadstuff",
+        "Upvote",
+        "upvoted",
+        "xixixao"
+    ]
 }

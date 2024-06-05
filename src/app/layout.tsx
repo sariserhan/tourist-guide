@@ -12,6 +12,8 @@ import {
   SignedOut,
   UserButton
 } from '@clerk/nextjs'
+import Link from "next/link";
+import Layout from "@/components/background-layout";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -32,10 +34,14 @@ export default function RootLayout({
           <Logo />
         </div>
         <ConvexClientProvider>
-          <NavBar />
+          {/* <NavBar /> */}
           <div className='absolute right-5 top-7 z-50'>
             <SignedOut>
-              <Button variant="secondary" className='hover:cursor-pointer'><SignInButton /></Button>
+              <Link href="/sign-in">
+                <Button variant="outline">
+                  Sign In
+                </Button>
+              </Link>
             </SignedOut>
             <SignedIn>
               <UserButton />

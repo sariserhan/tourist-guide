@@ -2,11 +2,10 @@ import WorldMap from '@/components/world-map';
 import Layout from '@/components/background-layout';
 import Contact from '@/components/contact';
 import { SelectedCountryProvider } from '@/providers/selected-country-provider';
-import { UserProvider } from '@/providers/user-store-provider';
+// import { UserProvider } from '@/providers/user-store-provider';
 
 export default function Home() {
   return (
-    <UserProvider>
       <section className=''>
         <SelectedCountryProvider>
           <div className='h-[70rem]'>
@@ -24,6 +23,5 @@ export default function Home() {
           </Layout>
         </SelectedCountryProvider>
       </section>
-    </UserProvider>
   );
 }

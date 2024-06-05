@@ -11,44 +11,41 @@ import { ForumCategoriesProps } from "@/lib/types";
 import { Button } from "@/components/ui/button";
 import { isUserLoggedIn } from "@/lib/utils";
 
-
 const Page = ({searchParams}: {searchParams: ForumCategoriesProps}) => {
   const { country, category, city } = searchParams;
   const countryData = globeData.features.find(({ properties }) => (properties.name.toLocaleLowerCase() === country.toLocaleLowerCase().replaceAll('%20', ' ')));
-  const countryName = countryData?.properties.name || null
+  if (!countryData) {
+    return notFound();
+  }
   const statsData = {
     ...countryData?.properties,
     id: countryData?.id,
     };
 
-  let go = ''
-  if (!isUserLoggedIn()) {
-    go = process.env.CLERK_SIGN_IN_FALLBACK_REDIRECT_URL as string
-  } else {
-    go = '/post?country=' + countryName + '&city=' + city + '&category=' + category
-  }
   return (
     <SelectedCountryProvider>
-      {countryName ?
-        <section className="flex min-h-screen flex-col mt-20">
+      {country ?
+        <section className="flex min-h-screen flex-col backdrop-filter backdrop-blur-xl">
           <div className='absolute right-[7rem] top-7 z-50'>
-          <Link href={go}>
+          <Link href={
+            !isUserLoggedIn() ? '/sign-in' : '/post?country=' + country + '&city=' + city + '&category=' + category
+          }>
             <Button>
               Publish New Post
             </Button>
           </Link>
         </div>
-          <div className="space-y-10">
-            {city ? <h1 className="text-center text-4xl font-bold">{countryName} - {city}</h1>
-            : <h1 className="text-center text-4xl font-bold">{countryName}</h1>
+          <div className="space-y-5 mt-20 p-2 border">
+            {city ? <h1 className="text-center text-4xl font-bold">{country} - {city}</h1>
+            : <h1 className="text-center text-4xl font-bold">{country}</h1>
             }
-            <div className="flex items-center justify-center gap-2 border p-2">
-              {!city && <SearchCity country={countryName}/>}
+            <div className="flex items-center justify-center gap-1 ">
+              {!city && <SearchCity country={country}/>}
             </div>
           </div>
           <div className="container mx-auto flex flex-1 gap-8 py-8">
-            <div className="hidden w-[240px] flex-col gap-4 md:flex">
-              <ForumCategories country={countryName} city={city} category={category}/>
+            <div className="w-[240px] flex-col gap-4 md:flex">
+              <ForumCategories country={country} city={city} category={category}/>
             </div>
             <div className="flex-1">
               <div className="grid gap-6">
@@ -56,8 +53,8 @@ const Page = ({searchParams}: {searchParams: ForumCategoriesProps}) => {
               </div>
             </div>
           </div>
-              <Divider />
-            <Stats {...statsData}/>
+            <Divider />
+            <Stats stats={statsData}/>
         </section>
           : notFound()
       }

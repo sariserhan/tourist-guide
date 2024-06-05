@@ -10,16 +10,36 @@ import getUnicodeFlagIcon from 'country-flag-icons/unicode'
 import getSymbolFromCurrency from 'currency-symbol-map'
 import { ScrollArea } from "./ui/scroll-area";
 
-const Stats = (stats: StatsProps) => {
-    const population = (stats.population / 1e6).toFixed(2) + 'M'
-    const surface_area = (stats.surface_area / 1e6) > 1 ? (stats.surface_area / 1e6).toFixed(2) + 'M km²' : (stats.surface_area / 1e3).toFixed(2) + 'K km²'
+type StatsProps = {
+        id?: string | undefined
+        name?: string | null
+        capital?: string | null
+        government?: string | null
+        currency_code?: string | null
+        currency?: string | null
+        continent?: string | null
+        region?: string | null
+        population?: number | null
+        calling_code?: string | number
+        surface_area?: number | null
+        national_dish?: string | null
+        religion?: string | null
+        life_expectancy?: number | null
+        yearly_avg_temperature?: number | null
+        languages?: string[]
+        cities?: string[]
+}
+
+const Stats = ({stats}: {stats: StatsProps}) => {
+    const population = stats.population ? ((stats.population / 1e6).toFixed(2) + 'M') : null
+    const surface_area = stats.surface_area ? ((stats.surface_area / 1e6) > 1 ? (stats.surface_area / 1e6).toFixed(2) + 'M km²' : (stats.surface_area / 1e3).toFixed(2) + 'K km²') : null
 
     return (
         <div className="flex justify-center m-10 p-10 z-50">
-        <div className="grid sm:grid-cols-4 gap-4 justify-center">
+        <div className="grid sm:grid-cols-4 gap-4 justify-center ">
             {stats.name &&
-            <article className="flex items-center gap-4 rounded-lg border border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-gray-100">
-                <span className="p-3 rounded-full border">
+            <article className="flex items-center gap-4 rounded-lg border border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
+                <span className="p-3 rounded-full border ">
                     {stats.id ? getUnicodeFlagIcon(stats.id) : <GiIsland />}
                 </span>
                 <div>
@@ -28,7 +48,7 @@ const Stats = (stats: StatsProps) => {
                 </div>
             </article>}
             {stats.capital &&
-            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-gray-100">
+            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
                 <span className="p-3 rounded-full border text-gray-500">
                     <RiGovernmentFill size={30}/>
                 </span>
@@ -39,7 +59,7 @@ const Stats = (stats: StatsProps) => {
             </article>
             }
             {stats.government &&
-            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-gray-100">
+            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
                 <span className="p-3 rounded-full border text-gay-400">
                     <FaLandmarkFlag size={30}/>
                 </span>
@@ -51,7 +71,7 @@ const Stats = (stats: StatsProps) => {
             </article>
             }
             {stats.currency_code &&
-            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-gray-100">
+            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
                 <span className="p-3 rounded-full border text-green-500 text-2xl">
                     {getSymbolFromCurrency(stats.currency_code)
                     || <MdOutlineCurrencyExchange size={30}/>}
@@ -64,7 +84,7 @@ const Stats = (stats: StatsProps) => {
             </article>
             }
             {stats.continent &&
-            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-gray-100">
+            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
                 <span className="p-3 rounded-full border text-amber-700">
                     {
                         stats.continent === 'Africa' ? <GiAfrica size={30}/>
@@ -83,7 +103,7 @@ const Stats = (stats: StatsProps) => {
             </article>
             }
             {stats.region &&
-            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-gray-100">
+            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
                 <span className="p-3 rounded-full border text-yellow-400">
                     <GiEarthAfricaEurope size={30}/>
                 </span>
@@ -94,8 +114,8 @@ const Stats = (stats: StatsProps) => {
             </article>
             }
 
-            {stats.population > 0 &&
-            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-gray-100">
+            {stats.population && (stats.population > 0) &&
+            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
                 <span className="p-3 rounded-full border text-lime-600">
                     <FaPeopleGroup size={30}/>
                 </span>
@@ -107,7 +127,7 @@ const Stats = (stats: StatsProps) => {
             </article>
             }
             {stats.calling_code &&
-            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-gray-100">
+            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
                 <span className="p-3 rounded-full border text-purple-400">
                     <FaPhoneFlip size={30}/>
                 </span>
@@ -119,7 +139,7 @@ const Stats = (stats: StatsProps) => {
             </article>
             }
             {stats.surface_area &&
-            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-gray-100">
+            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
                 <span className="p-3 rounded-full border text-slate-400">
                     <FaChartArea size={30}/>
                 </span>
@@ -131,7 +151,7 @@ const Stats = (stats: StatsProps) => {
             </article>
             }
             {stats.national_dish &&
-            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-gray-100">
+            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
                 <span className="p-3 rounded-full border text-orange-400">
                     <IoFastFoodOutline size={30}/>
                 </span>
@@ -144,10 +164,10 @@ const Stats = (stats: StatsProps) => {
             </article>
             }
             {stats.religion &&
-            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-gray-100">
+            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
                 <span className="p-3 rounded-full border text-green-700">
                     {
-                          stats.religion === 'Christianity' ? <FaChurch size={30}/>
+                        stats.religion === 'Christianity' ? <FaChurch size={30}/>
                         : stats.religion === 'Islam' ? <FaMosque size={30}/>
                         : stats.religion === 'Hinduism' ? <MdTempleHindu size={30}/>
                         : stats.religion === 'Buddhism' ? <MdTempleBuddhist size={30}/>
@@ -163,7 +183,7 @@ const Stats = (stats: StatsProps) => {
             </article>
             }
             {stats.life_expectancy &&
-            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-gray-100">
+            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
                 <span className="p-3 rounded-full border text-blue-500">
                     <GiLifeBar size={30}/>
                 </span>
@@ -175,7 +195,7 @@ const Stats = (stats: StatsProps) => {
             </article>
             }
             {stats.yearly_avg_temperature &&
-            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-gray-100">
+            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
                 <span className="p-3 rounded-full border text-red-400">
                     <FaTemperatureHigh size={30}/>
                 </span>
@@ -188,7 +208,7 @@ const Stats = (stats: StatsProps) => {
             }
 
             {stats.languages &&
-            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-gray-100">
+            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
                 <span className="p-3 rounded-full border text-blue-400">
                     <FaLanguage size={30}/>
                 </span>
@@ -205,7 +225,7 @@ const Stats = (stats: StatsProps) => {
             </article>
             }
             {/* {stats.cities &&
-            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-gray-100">
+            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
                 <span className="p-3 rounded-full border text-stone-400">
                     <GiModernCity size={30}/>
                 </span>

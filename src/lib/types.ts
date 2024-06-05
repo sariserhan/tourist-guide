@@ -1,3 +1,6 @@
+import { Dispatch, SetStateAction } from "react";
+import { Id } from "../../convex/_generated/dataModel";
+
 export type ForumCategoriesProps = {
     country: string;
     city: string;
@@ -9,6 +12,7 @@ export type ForumCardProps = ForumCategoriesProps & {
     article: string;
     createdBy: string;
     userImageUrl: string;
+    storageId?: Id<"_storage"> | string;
 };
 
 export type PostProps = ForumCardProps & {
@@ -22,4 +26,10 @@ export type PostPropsWithId = ForumCardProps & {
     likes: number;
     disLikes: number;
     _creationTime: string;
+}
+
+export interface PostImageProps {
+    setImage: Dispatch<SetStateAction<string>>;
+    setImageStorageId: Dispatch<SetStateAction<Id<"_storage"> | null>>;
+    image: string;
 }
