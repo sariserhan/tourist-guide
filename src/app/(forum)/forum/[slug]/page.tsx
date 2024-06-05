@@ -6,11 +6,16 @@ import { useUser } from "@clerk/nextjs";
 import { api } from "@/../convex/_generated/api";
 import { Id } from "@/../convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
-import { Input } from "@/components/ui/input";
+import { useForm } from "react-hook-form"
 import { useMutation, useQuery } from "convex/react";
 import { DeleteIcon, ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
+import { Form, FormControl, FormField, FormItem } from "@/components/ui/form";
+import { Textarea } from "@/components/ui/textarea";
+import { z } from "zod";
+import { toast } from "@/components/ui/use-toast";
+import { zodResolver } from "@hookform/resolvers/zod";
 
-type paramsProps = {
+interface paramsProps {
   slug: Id<"post">
 }
 
@@ -42,6 +47,18 @@ export default function SlugPage({params}: {params: paramsProps}) {
   const neutralDownVote = useMutation(api.posts.neutralizeDownvote);
   const setDownvote = useMutation(api.posts.downvotePost);
   const deletePost = useMutation(api.posts.deletePost);
+  const FormSchema = z.object({
+    comment: z.string().min(2, {
+      message: "Comment must be at least 2 characters.",
+    }),
+  })
+
+  const form = useForm<z.infer<typeof FormSchema>>({
+    resolver: zodResolver(FormSchema),
+    defaultValues: {
+      comment: "",
+    },
+  })
 
   if (response === undefined) {
     return <div>Loading...</div>;
@@ -91,6 +108,17 @@ export default function SlugPage({params}: {params: paramsProps}) {
       await neutralUpVote(idAndUser)
     :
       await setUpvote(idAndUser);
+  }
+
+  function onSubmit(data: z.infer<typeof FormSchema>) {
+    toast({
+      title: "You submitted the following values:",
+      description: (
+        <pre className="mt-2 w-[340px] rounded-md bg-slate-950 p-4">
+          <code className="text-white">{JSON.stringify(data, null, 2)}</code>
+        </pre>
+      ),
+    })
   }
 
   return (
@@ -153,8 +181,22 @@ export default function SlugPage({params}: {params: paramsProps}) {
           </div>
           <div className="mt-4">
             <h2 className="text-xl font-semibold mb-2">Comments</h2>
-            <Input type="text" placeholder="Add a comment" className="w-full p-2 border border-gray-300 rounded mb-2" />
-            <Button className="bg-blue-500 text-white px-4 py-2 rounded">Submit</Button>
+            <Form {...form}>
+              <form onSubmit={form.handleSubmit(onSubmit)} className="space-y-8">
+                <FormField
+                  control={form.control}
+                  name="comment"
+                  render={({ field }) => (
+                    <FormItem>
+                      <FormControl>
+                        <Textarea id="comment" placeholder="Add a comment" className="mt-1 mb-2 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+                      </FormControl>
+                    </FormItem>
+                  )}
+                />
+                <Button type="submit" className="bg-blue-500 text-white px-4 py-2 rounded">Submit</Button>
+              </form>
+            </Form>
           </div>
         </div>
       </div>
