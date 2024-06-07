@@ -4,62 +4,31 @@ import Image from "next/image";
 import Divider from "@/components/divider";
 import Replies from "@/components/replies";
 import DeleteComponent from "@/components/delete-component";
+import PopoverComponent from "@/components/popover-component";
 import { z } from "zod";
-import { notFound, useRouter } from 'next/navigation';
+import { notFound } from 'next/navigation';
 import { useUser } from "@clerk/nextjs";
 import { api } from "@/../convex/_generated/api";
 import { Id, Doc } from "@/../convex/_generated/dataModel";
 import { Button } from "@/components/ui/button";
 import { useForm } from "react-hook-form";
 import { useMutation, useQuery } from "convex/react";
-import { ReplyIcon, ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
 import { Form, FormControl, FormField, FormItem, FormMessage } from "@/components/ui/form";
 import { Textarea } from "@/components/ui/textarea";
 import { toast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formatCreationTime } from "@/lib/utils";
-import { useState } from "react";
-import {
-  Popover,
-  PopoverContent,
-  PopoverTrigger,
-} from "@/components/ui/popover"
-import PopoverComponent from "@/components/popover-component";
+import { LikeButton, DisLikeButton } from "@/components/like-dislike-button";
 
 interface paramsProps {
   slug: Id<"posts">
 }
 
-// interface PostValue {
-//   _id: Id<"posts">;
-//   _creationTime: number;
-//   article: string;
-//   author: string;
-//   authorId: string;
-//   authorImageUrl: string;
-//   category: string;
-//   city: string;
-//   country: string;
-//   downvotedBy: string[];
-//   imageStorageId: string;
-//   imageUrl: string;
-//   likes: number;
-//   title: string;
-//   upvotedBy: string[];
-// }
-
 export default function SlugPage({ params }: { params: paramsProps }) {
-  const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const { isSignedIn, user } = useUser();
   const postId = params.slug as Id<"posts">;
-  const router = useRouter();
   const posts = useQuery(api.posts.getPost, { postId });
-  const setUpvote = useMutation(api.posts.upvotePost);
-  const setDownvote = useMutation(api.posts.downvotePost);
-  const setUpvoteComment = useMutation(api.comments.upvoteComment);
-  const setDownvoteComment = useMutation(api.comments.downvoteComment);
   const getAllComments = useQuery(api.comments.getAllComments, { postId });
-  const createReply = useMutation(api.replies.createReply);
   const createComment = useMutation(api.comments.createComment);
   const FormSchema = z.object({
     comment: z.string().min(2, {
@@ -67,23 +36,10 @@ export default function SlugPage({ params }: { params: paramsProps }) {
     }),
   });
 
-  const FormSchemaComment = z.object({
-    reply: z.string().min(2, {
-      message: "Reply must be at least 2 characters.",
-    }),
-  });
-
   const form = useForm<z.infer<typeof FormSchema>>({
     resolver: zodResolver(FormSchema),
     defaultValues: {
       comment: "",
-    },
-  });
-
-  const formComment = useForm<z.infer<typeof FormSchemaComment>>({
-    resolver: zodResolver(FormSchemaComment),
-    defaultValues: {
-      reply: "",
     },
   });
 
@@ -113,24 +69,6 @@ export default function SlugPage({ params }: { params: paramsProps }) {
     upvotedBy
   } = posts as Doc<"posts">;
 
-  const idAndUser = { postId: id, votingUser: user?.username! };
-
-  const handleDownVote = async () => {
-    if (!isSignedIn) {
-      router.push("/sign-in");
-      return;
-    }
-    await setDownvote(idAndUser);
-  }
-
-  const handleUpVote = async () => {
-    if (!isSignedIn) {
-      router.push("/sign-in");
-      return;
-    }
-    await setUpvote(idAndUser);
-  }
-
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     await createComment({
       postId,
@@ -142,21 +80,6 @@ export default function SlugPage({ params }: { params: paramsProps }) {
     form.reset({ comment: '' });
     toast({
       title: "Comment Submitted!"
-    });
-  };
-
-  const onSubmitReply = async (data: z.infer<typeof FormSchemaComment>, commentId: Id<"comments">) => {
-    setIsPopoverOpen(false);
-    await createReply({
-      commentId,
-      userClerkId: user?.id!,
-      userClerkName: user?.username!,
-      userClerkImageUrl: user?.imageUrl!,
-      text: data.reply
-    });
-    formComment.reset({ reply: '' });
-    toast({
-      title: "Reply Submitted!"
     });
   };
 
@@ -199,24 +122,10 @@ export default function SlugPage({ params }: { params: paramsProps }) {
               {author} on {new Date(creationTime).toLocaleDateString()}
             </p>
             <div className="flex items-center mb-4">
-              <Button
-                variant={upvotedBy.includes(user?.username!) ? "secondary" : "outline"}
-                onClick={() => handleUpVote()}
-                className="rounded-full"
-                size="icon"
-              >
-                <ThumbsUpIcon className="w-5 h-5 text-green-500" />
-              </Button>
+              <LikeButton posts={posts} username={user?.username || ''} isSignedIn={isSignedIn || false} />
               <p className="mx-2 font-semibold text-xl text-gray-700">{likes}</p>
-              <Button
-                variant={downvotedBy.includes(user?.username!) ? "secondary" : "outline"}
-                onClick={() => handleDownVote()}
-                className="rounded-full"
-                size="icon"
-              >
-                <ThumbsDownIcon className="w-5 h-5 text-red-500" />
-              </Button>
-          </div>
+              <DisLikeButton posts={posts} username={user?.username || ''} isSignedIn={isSignedIn || false} />
+            </div>
           </div>
           <div className="mt-4">
             <h2 className="text-xl font-semibold mb-2">Comments</h2>
@@ -276,41 +185,9 @@ export default function SlugPage({ params }: { params: paramsProps }) {
                       <PopoverComponent commentId={comment._id}/>
                     </div>
                     <div className="flex items-center mb-2">
-                      {/* LIKE BUTTON */}
-                      <Button
-                        variant={comment.upvotedBy.includes(user?.username!) ? "secondary" : "outline"}
-                        onClick={async () =>
-                          {
-                            if (!isSignedIn) {
-                              router.push("/sign-in");
-                              return;
-                            }
-                            await setUpvoteComment({ commentId: comment._id, votingUser: user.username! })
-                          }
-                        }
-                        className="rounded-full "
-                        size="smallIcon"
-                      >
-                        <ThumbsUpIcon className="w-3 h-3 text-green-500" />
-                      </Button>
+                      <LikeButton comment={comment} username={user?.username || ''} isSignedIn={isSignedIn || false} />
                       <p className="mx-2 font-semibold text-sm text-gray-700">{comment.likes}</p>
-                      {/* DISLIKE BUTTON */}
-                      <Button
-                        variant={comment.downvotedBy.includes(user?.username!) ? "secondary" : "outline"}
-                        onClick={async () =>
-                          {
-                            if (!isSignedIn) {
-                              router.push("/sign-in");
-                              return;
-                            }
-                              await setDownvoteComment({ commentId: comment._id, votingUser: user.username! });
-                          }
-                        }
-                        className="rounded-full"
-                        size="smallIcon"
-                      >
-                        <ThumbsDownIcon className="w-3 h-3 text-red-500" />
-                      </Button>
+                      <DisLikeButton comment={comment} username={user?.username || ''} isSignedIn={isSignedIn || false} />
                     </div>
                   </div>
                   <div>
