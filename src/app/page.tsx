@@ -2,7 +2,6 @@ import WorldMap from '@/components/world-map';
 import Layout from '@/components/background-layout';
 import Contact from '@/components/contact';
 import { SelectedCountryProvider } from '@/providers/selected-country-provider';
-// import { UserProvider } from '@/providers/user-store-provider';
 
 export default function Home() {
   return (

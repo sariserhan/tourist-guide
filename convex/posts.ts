@@ -17,13 +17,13 @@ export const addPost = mutation({
         if (!identity) throw new ConvexError("User not authenticated");
 
         const user = await ctx.db
-            .query("user")
+            .query("users")
             .filter((q) => q.eq(q.field("email"), identity.email))
             .collect();
 
         if (user.length === 0) throw new ConvexError("User not found");
 
-        return await ctx.db.insert("post", {
+        return await ctx.db.insert("posts", {
             title: args.title,
             article: args.article,
             likes: 0,
@@ -43,10 +43,10 @@ export const addPost = mutation({
 
 export const getPost = query({
     args: {
-        postId: v.id("post"),
+        postId: v.id("posts"),
     },
     handler: async (ctx, args) => {
-        return await ctx.db.get(args.postId as Id<"post">);
+        return await ctx.db.get(args.postId as Id<"posts">);
     },
 });
 
@@ -68,7 +68,7 @@ export const listPosts = query({
     },
     handler: async (ctx, args) => {
         return await ctx.db
-        .query("post")
+        .query("posts")
         .filter((q) => q.eq(q.field("country"), args.country))
         .filter((q) => q.eq(q.field("city"), args.city))
         .filter((q) => q.eq(q.field("category"), args.category))
@@ -77,9 +77,26 @@ export const listPosts = query({
     },
 });
 
+// export const addCommentToPost = mutation({
+//     args: {
+//         postId: v.id("posts"),
+//         commentId: v.id("comments"),
+//     },
+//     handler: async (ctx, args) => {
+//         const post = await ctx.db.get(args.postId);
+//         if (!post) {
+//             throw new ConvexError("Post not found");
+//         }
+//     await ctx.db.patch(args.postId, {
+//         commentsId: [...post.commentsId, args.commentId],
+//     });
+//     return post.commentsId;
+//     }
+// });
+
 export const getUpvoteList = query({
     args: {
-        postId: v.id("post"),
+        postId: v.id("posts"),
     },
     handler: async (ctx, args) => {
         const post = await ctx.db.get(args.postId);
@@ -93,7 +110,7 @@ export const getUpvoteList = query({
 
 export const getDownvoteList = query({
     args: {
-        postId: v.id("post"),
+        postId: v.id("posts"),
     },
     handler: async (ctx, args) => {
         const post = await ctx.db.get(args.postId);
@@ -107,8 +124,8 @@ export const getDownvoteList = query({
 
 export const upvotePost = mutation({
     args: {
-        postId: v.id("post"),
-        author: v.string(),
+        postId: v.id("posts"),
+        votingUser: v.string(),
     },
     handler: async (ctx, args) => {
         const post = await ctx.db.get(args.postId);
@@ -116,58 +133,25 @@ export const upvotePost = mutation({
             throw new ConvexError("Post not found");
         }
 
-        await ctx.db.patch(args.postId, {
-            likes: post.likes + 1,
-            upvotedBy: [...post.upvotedBy, args.author],
-            downvotedBy: post.downvotedBy.filter((user) => user !== args.author),
-        });
-        return post.likes;
-    },
-});
-
-export const neutralizeUpvote = mutation({
-    args: {
-        postId: v.id("post"),
-        author: v.string(),
-    },
-    handler: async (ctx, args) => {
-        const post = await ctx.db.get(args.postId);
-        if (!post) {
-            throw new ConvexError("Post not found");
-        }
-
+        post.upvotedBy.includes(args.votingUser) ?
         await ctx.db.patch(args.postId, {
             likes: post.likes - 1,
-            upvotedBy: post.upvotedBy.filter((user) => user !== args.author),
-        });
-        return post.likes;
-    },
-});
-
-export const neutralizeDownvote = mutation({
-    args: {
-        postId: v.id("post"),
-        author: v.string(),
-    },
-    handler: async (ctx, args) => {
-        const post = await ctx.db.get(args.postId);
-        if (!post) {
-            throw new ConvexError("Post not found");
-        }
-
+            upvotedBy: post.upvotedBy.filter((user) => user !== args.votingUser),
+        })
+        :
         await ctx.db.patch(args.postId, {
             likes: post.likes + 1,
-            downvotedBy: post.downvotedBy.filter((user) => user !== args.author),
+            upvotedBy: [...post.upvotedBy, args.votingUser],
+            downvotedBy: post.downvotedBy.filter((user) => user !== args.votingUser),
         });
         return post.likes;
     },
 });
-
 
 export const downvotePost = mutation({
     args: {
-        postId: v.id("post"),
-        author: v.string(),
+        postId: v.id("posts"),
+        votingUser: v.string(),
     },
     handler: async (ctx, args) => {
         const post = await ctx.db.get(args.postId);
@@ -175,10 +159,16 @@ export const downvotePost = mutation({
             throw new ConvexError("Post not found");
         }
 
+        post.downvotedBy.includes(args.votingUser) ?
+        await ctx.db.patch(args.postId, {
+            likes: post.likes + 1,
+            downvotedBy: post.downvotedBy.filter((user) => user !== args.votingUser),
+        })
+        :
         await ctx.db.patch(args.postId, {
             likes: post.likes - 1,
-            downvotedBy: [...post.downvotedBy, args.author],
-            upvotedBy: post.upvotedBy.filter((user) => user !== args.author),
+            downvotedBy: [...post.downvotedBy, args.votingUser],
+            upvotedBy: post.upvotedBy.filter((user) => user !== args.votingUser),
         });
         return post.likes;
     },
@@ -186,28 +176,10 @@ export const downvotePost = mutation({
 
 export const deletePost = mutation({
     args: {
-        postId: v.id("post"),
+        postId: v.id("posts"),
     },
     handler: async (ctx, args) => {
         await ctx.db.delete(args.postId);
         return true;
     },
 });
-
-// export const addComment = mutation({
-//     args: {
-//         postId: v.id("post"),
-//         commentId: v.id("comment"),
-//     },
-//     handler: async (ctx, args) => {
-//         const post = await ctx.db.get(args.postId);
-//         if (!post) {
-//             throw new ConvexError("Post not found");
-//         }
-//         const comment = await ctx.db.get(args.commentId);
-//         await ctx.db.patch(args.postId, {
-//             comments: [...post.comments, comment],
-//         });
-//         return true;
-//     },
-// });

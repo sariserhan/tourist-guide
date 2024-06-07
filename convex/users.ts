@@ -5,7 +5,7 @@ export const getUserById = query({
   args: { clerkId: v.string() },
   handler: async (ctx, args) => {
     const user = await ctx.db
-      .query("user")
+      .query("users")
       .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
       .unique();
 
@@ -26,7 +26,7 @@ export const createUser = internalMutation({
     userName: v.string(),
   },
   handler: async (ctx, args) => {
-    await ctx.db.insert("user", {
+    await ctx.db.insert("users", {
       clerkId: args.clerkId,
       email: args.email,
       imageUrl: args.imageUrl,
@@ -43,7 +43,7 @@ export const updateUser = internalMutation({
   },
   async handler(ctx, args) {
     const user = await ctx.db
-      .query("user")
+      .query("users")
       .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
       .unique();
 
@@ -75,7 +75,7 @@ export const deleteUser = internalMutation({
   args: { clerkId: v.string() },
   async handler(ctx, args) {
     const user = await ctx.db
-      .query("user")
+      .query("users")
       .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
       .unique();
 

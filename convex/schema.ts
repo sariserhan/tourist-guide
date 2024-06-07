@@ -1,16 +1,16 @@
 import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { schemaToMermaid } from "convex-schema-mermaid";
 
-export default defineSchema({
-    user: defineTable({
+const schema = defineSchema({
+    users: defineTable({
         email: v.string(),
         userName: v.string(),
         clerkId: v.string(),
         imageUrl: v.string(),
     }),
 
-
-    post: defineTable({
+    posts: defineTable({
         title: v.string(),
         article: v.string(),
         imageUrl: v.optional(v.string()),
@@ -22,17 +22,6 @@ export default defineSchema({
         author: v.string(),
         authorId: v.string(),
         authorImageUrl: v.string(),
-        comments: v.optional(
-            v.array(
-                v.object({
-                    commentId: v.id("comment"),
-                    commentText: v.string(),
-                    commentAuthor: v.string(),
-                    commentAuthorId: v.string(),
-                    commentAuthorImageUrl: v.string(),
-                })
-            )
-        ),
         upvotedBy: v.array(v.string()),
         downvotedBy: v.array(v.string()),
     })
@@ -40,15 +29,29 @@ export default defineSchema({
     .searchIndex('search_title', { searchField: 'title' })
     .searchIndex('search_body', { searchField: 'article' }),
 
-    // comment: defineTable({
-    //     postId: v.id("post"),
-    //     text: v.string(),
-    //     authorId: v.id("user"),
-    //     authorName: v.string(),
-    //     authorImageUrl: v.string(),
-    //     likes: v.number(),
-    //     upvotedBy: v.array(v.id("user")),
-    //     downvotedBy: v.array(v.id("user")),
-    // })
-});
+    comments: defineTable({
+        postId: v.id("posts"),
+        userClerkId: v.string(),
+        userClerkName: v.string(),
+        userClerkImageUrl: v.string(),
+        text: v.string(),
+        likes: v.number(),
+        upvotedBy: v.array(v.string()),
+        downvotedBy: v.array(v.string()),
+    })
+    .searchIndex('search_postId', { searchField: 'postId' }),
 
+    replies: defineTable({
+        commentId: v.id("comments"),
+        userClerkId: v.string(),
+        userClerkName: v.string(),
+        userClerkImageUrl: v.string(),
+        text: v.string(),
+        likes: v.number(),
+        upvotedBy: v.array(v.string()),
+        downvotedBy: v.array(v.string()),
+    }),
+});
+// console.log(schemaToMermaid(schema));
+
+export default schema;

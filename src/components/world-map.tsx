@@ -5,7 +5,7 @@ import { ComposableMap, Geographies, Geography, Marker } from "react-simple-maps
 import globeData from "@/lib/globe.json";
 import capitalOfCountries from "@/lib/capital.json";
 import Layout from './background-layout';
-import {SearchCountry, SearchCity} from './search';
+import {SearchCountry} from './search';
 import { useSelectedCountry } from '@/providers/selected-country-provider';
 
 const WorldMap = () => {

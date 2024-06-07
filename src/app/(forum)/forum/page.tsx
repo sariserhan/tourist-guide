@@ -63,3 +63,5 @@ const Page = ({searchParams}: {searchParams: ForumCategoriesProps}) => {
 }
 
 export default Page
+
+

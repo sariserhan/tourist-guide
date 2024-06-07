@@ -2,6 +2,7 @@
 
 import Image from "next/image";
 import Link from "next/link";
+import DeleteComponent from "./delete-component";
 import { Button } from "./ui/button";
 import { useQuery, useMutation } from "convex/react";
 import { api } from "../../convex/_generated/api";
@@ -9,17 +10,15 @@ import { ForumCategoriesProps } from "@/lib/types";
 import { formatCreationTime } from "@/lib/utils";
 import { useRouter } from 'next/navigation'
 import { useUser } from "@clerk/nextjs";
-import { DeleteIcon, ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
+import { ThumbsDownIcon, ThumbsUpIcon } from "lucide-react";
+import { Id } from "../../convex/_generated/dataModel";
 
 const ForumCard = ({country, category, city}: ForumCategoriesProps) => {
   const {isSignedIn, user} = useUser();
   const router = useRouter()
   const allPosts = useQuery(api.posts.listPosts, { country, city, category });
   const setUpvote = useMutation(api.posts.upvotePost);
-  const neutralUpVote = useMutation(api.posts.neutralizeUpvote);
-  const neutralDownVote = useMutation(api.posts.neutralizeDownvote);
   const setDownvote = useMutation(api.posts.downvotePost);
-  const deletePost = useMutation(api.posts.deletePost);
 
   if (!allPosts) {
     return <div className="flex items-center justify-center font-bold">No Post Yet</div>;
@@ -30,7 +29,7 @@ const ForumCard = ({country, category, city}: ForumCategoriesProps) => {
 
   return (
     <>
-      {posts?.map(({ title, article, author, authorImageUrl, likes, _creationTime, _id, upvotedBy, downvotedBy, imageUrl }) => (
+      {posts?.map(({ title, article, author, authorImageUrl, likes, _creationTime, _id, upvotedBy, downvotedBy, imageUrl, imageStorageId}) => (
         <div key={_id} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
           <div className="flex items-center justify-between">
             <Link
@@ -40,13 +39,10 @@ const ForumCard = ({country, category, city}: ForumCategoriesProps) => {
             </Link>
             <div className="flex items-center justify-between">
               {isSignedIn && user.username === author &&
-                <Button variant="ghost" size="icon"
-                  onClick={async () => {
-                    await deletePost({ postId: _id });
-                  }}
-                >
-                  <DeleteIcon />
-                </Button>
+                <DeleteComponent
+                  postId={_id}
+                  imageStorageId={imageStorageId as Id<"_storage">}
+              />
               }
               <div className="text-sm text-nowrap text-gray-500 dark:text-gray-400">{formatCreationTime(_creationTime)}</div>
             </div>
@@ -99,10 +95,7 @@ const ForumCard = ({country, category, city}: ForumCategoriesProps) => {
                     router.push("/sign-in")
                     return
                   }
-                  upvotedBy.includes(user?.username!) ?
-                    await neutralUpVote({ postId: _id, author: user?.username!})
-                    :
-                    await setUpvote({ postId: _id, author: user?.username!})
+                  await setUpvote({ postId: _id, votingUser: user?.username!})
                 }}
               >
                 <ThumbsUpIcon className="w-5 h-5 text-green-500" />
@@ -117,10 +110,7 @@ const ForumCard = ({country, category, city}: ForumCategoriesProps) => {
                     router.push("/sign-in")
                     return
                   }
-                  downvotedBy.includes(user?.username!) ?
-                    await neutralDownVote({ postId: _id, author: user?.username!})
-                    :
-                    await setDownvote({ postId: _id, author: user?.username!})
+                  await setDownvote({ postId: _id, votingUser: user?.username!})
                 }}
               >
                 <ThumbsDownIcon className="w-5 h-5 text-red-500" />
