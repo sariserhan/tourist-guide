@@ -9,8 +9,8 @@ export const addPost = mutation({
         country: v.string(),
         city: v.string(),
         category: v.string(),
-        imageUrl: v.string(),
-        imageStorageId: v.union(v.id("_storage"), v.null()),
+        imageUrls: v.optional(v.array(v.string())),
+        imageStorageIds: v.optional(v.array(v.id("_storage"))),
     },
     handler: async (ctx, args) => {
         const identity = await ctx.auth.getUserIdentity();
@@ -28,11 +28,11 @@ export const addPost = mutation({
             article: args.article,
             likes: 0,
             country: args.country,
-            imageUrl: args.imageUrl,
-            imageStorageId: args.imageStorageId,
+            imageUrls: args.imageUrls,
+            imageStorageIds: args.imageStorageIds,
             city: args.city,
             category: args.category,
-            author: user[0].userName,
+            authorName: user[0].userName,
             authorId: user[0].clerkId,
             authorImageUrl: user[0].imageUrl,
             upvotedBy: [],
@@ -47,6 +47,16 @@ export const getPost = query({
     },
     handler: async (ctx, args) => {
         return await ctx.db.get(args.postId as Id<"posts">);
+    },
+});
+
+export const getPostLikes = query({
+    args: {
+        postId: v.id("posts"),
+    },
+    handler: async (ctx, args) => {
+        const post = await ctx.db.get(args.postId as Id<"posts">);
+        return post && post.likes;
     },
 });
 

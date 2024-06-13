@@ -1,9 +1,11 @@
+import 'server-only';
 import Divider from "@/components/divider";
 import ForumCard from "@/components/forum-card";
 import ForumCategories from "@/components/forum-categories";
 import Stats from "@/components/stats";
 import globeData from "@/lib/globe.json";
 import Link from "next/link";
+import BreadCrumb from "@/components/breadcrumb-custom";
 import { SearchCity } from "@/components/search";
 import { SelectedCountryProvider } from "@/providers/selected-country-provider";
 import { notFound } from "next/navigation";
@@ -21,7 +23,6 @@ const Page = ({searchParams}: {searchParams: ForumCategoriesProps}) => {
     ...countryData?.properties,
     id: countryData?.id,
     };
-
   return (
     <SelectedCountryProvider>
       {country ?
@@ -42,6 +43,9 @@ const Page = ({searchParams}: {searchParams: ForumCategoriesProps}) => {
             <div className="flex items-center justify-center gap-1 ">
               {!city && <SearchCity country={country}/>}
             </div>
+          </div>
+          <div className="px-9">
+            <BreadCrumb country={country} city={city} category={category}/>
           </div>
           <div className="container mx-auto flex flex-1 gap-8 py-8">
             <div className="w-[240px] flex-col gap-4 md:flex">

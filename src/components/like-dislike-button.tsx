@@ -1,3 +1,5 @@
+"use client";
+
 import { Button } from '@/components/ui/button';
 import { ThumbsDownIcon, ThumbsUpIcon } from 'lucide-react';
 import { useRouter } from 'next/navigation';
@@ -8,7 +10,7 @@ import { Doc } from '../../convex/_generated/dataModel';
 interface LikeDislikeButtonProps {
   comment?: Doc<"comments">;
   posts?: Doc<"posts">;
-  username: string;
+  username: string | undefined;
   isSignedIn: boolean;
 }
 
@@ -16,6 +18,7 @@ export const LikeButton = ({comment, posts, username, isSignedIn}: LikeDislikeBu
   const router = useRouter();
   const setUpvote = useMutation(api.posts.upvotePost);
   const setUpvoteComment = useMutation(api.comments.upvoteComment);
+  if (!username) return;
   return (
     <>
       {
@@ -49,7 +52,7 @@ export const LikeButton = ({comment, posts, username, isSignedIn}: LikeDislikeBu
               }
             }
             className="rounded-full "
-            size="smallIcon"
+            size="icon"
           >
             <ThumbsUpIcon className="w-5 h-5 text-green-500" />
           </Button>
@@ -63,6 +66,7 @@ export const DisLikeButton = ({comment, posts, username, isSignedIn}: LikeDislik
   const router = useRouter();
   const setDownvote = useMutation(api.posts.downvotePost);
   const setDownvoteComment = useMutation(api.comments.downvoteComment);
+  if (!username) return;
   return (
     <>
       {
@@ -97,7 +101,7 @@ export const DisLikeButton = ({comment, posts, username, isSignedIn}: LikeDislik
                 }
               }
               className="rounded-full"
-              size="smallIcon"
+              size="icon"
             >
               <ThumbsDownIcon className="w-5 h-5 text-red-500" />
             </Button>

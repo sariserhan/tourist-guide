@@ -1,4 +1,3 @@
-
 const Divider = () => {
   return (
     <div>

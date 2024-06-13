@@ -1,16 +1,19 @@
-import { auth } from "@clerk/nextjs/server"
 import { type ClassValue, clsx } from "clsx"
+import { auth, currentUser } from "@clerk/nextjs/server"
 import { twMerge } from "tailwind-merge"
 
 export function cn(...inputs: ClassValue[]) {
   return twMerge(clsx(inputs))
 }
 
-
 export function isUserLoggedIn() {
   return auth().userId !== null
 }
 
+export async function getUserName() {
+  const user = await currentUser()
+  return user?.username || null
+}
 
 export const formatCreationTime = (timestamp: number) => {
   const currentDate = new Date();

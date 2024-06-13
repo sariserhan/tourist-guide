@@ -1,3 +1,5 @@
+"use client";
+
 import {
   AlertDialog,
   AlertDialogAction,
@@ -23,17 +25,54 @@ interface DeleteComponentProps {
   country?: string;
   city?: string;
   category?: string;
-  imageStorageId?: Id<"_storage">;
+  imageStorageIds?: Id<"_storage">[];
 }
 
-const DeleteComponent = ({commentId, postId, country, city, category, imageStorageId}: DeleteComponentProps) => {
+const DeleteComponent = ({commentId, postId, country, city, category, imageStorageIds}: DeleteComponentProps) => {
   const router = useRouter();
+  const handleDeletePost = async () => {
+    try {
+      if (country) {
+        router.push(`/forum?country=${country}&city=${city}&category=${category}`);
+      }
+      router.refresh();
+
+      postId && await fetchMutation(api.posts.deletePost, { postId });
+      imageStorageIds && imageStorageIds.map(async (storageId: Id<"_storage">) => {
+        await fetchMutation(api.files.deleteFile, { storageId });
+      })
+
+
+        const comments = postId && await fetchMutation(api.comments.deleteCommentsByPost, { postId });
+        if (comments) {
+          for (const comment of comments) {
+            await fetchMutation(api.replies.deleteReplyByCommentId, { commentId: comment._id });
+          }
+        }
+      toast({ title: "Post Deleted" });
+    } catch (error) {
+      console.error("Failed to delete post:", error);
+      toast({ title: "Failed to delete post" });
+    }
+  };
+
+  const handleDeleteComment = async () => {
+    try {
+      if (commentId) {
+        await fetchMutation(api.comments.deleteComment, { commentId });
+        await fetchMutation(api.replies.deleteReplyByCommentId, { commentId });
+        router.refresh();
+      }
+      toast({ title: "Comment Deleted" });
+    } catch (error) {
+      console.error("Failed to delete comment:", error);
+      toast({ title: "Failed to delete comment" });
+    }
+  };
   return (
     <AlertDialog>
       <AlertDialogTrigger>
-        <Button
-          variant="ghost" size="icon"
-        >
+        <Button variant="ghost" size="icon">
           <DeleteIcon />
         </Button>
       </AlertDialogTrigger>
@@ -51,40 +90,14 @@ const DeleteComponent = ({commentId, postId, country, city, category, imageStora
             Cancel
           </AlertDialogCancel>
           {postId ?
-            <AlertDialogAction
-              onClick={async () => {
-                toast({
-                  title: "Post Deleted"
-                });
-                country && router.push(`/forum?country=${country}&city=${city}&category=${category}`);
-                await fetchMutation(api.posts.deletePost, { postId });
-                imageStorageId && await fetchMutation(api.files.deleteFile, { storageId: imageStorageId as Id<"_storage"> });
-                const comments = await fetchMutation(api.comments.deleteCommentsByPost, { postId });
-                comments?.map(async (comment) => {
-                  await fetchMutation(api.replies.deleteReplyByCommentId, { commentId: comment._id });
-                  });
-              }}
-              >
-              Delete
-            </AlertDialogAction>
+            <AlertDialogAction onClick={handleDeletePost}>Delete</AlertDialogAction>
             :
-            <AlertDialogAction
-              onClick={async () => {
-                commentId && await fetchMutation(api.comments.deleteComment, { commentId });
-                commentId && await fetchMutation(api.replies.deleteReplyByCommentId, { commentId });
-                toast({
-                  title: "Comment Deleted"
-                });
-              }}
-            >
-              Delete
-            </AlertDialogAction>
+            <AlertDialogAction onClick={handleDeleteComment}>Delete</AlertDialogAction>
           }
         </AlertDialogFooter>
       </AlertDialogContent>
     </AlertDialog>
   )
-
 }
 
 export default DeleteComponent

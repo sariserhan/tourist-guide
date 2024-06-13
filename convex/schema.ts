@@ -8,24 +8,27 @@ const schema = defineSchema({
         userName: v.string(),
         clerkId: v.string(),
         imageUrl: v.string(),
-    }),
+        interestedCountries: v.array(v.string()),
+        isOnline: v.boolean(),
+    })
+    .searchIndex('search_clerkId', { searchField: 'clerkId' }),
 
     posts: defineTable({
         title: v.string(),
         article: v.string(),
-        imageUrl: v.optional(v.string()),
-        imageStorageId: v.optional(v.union(v.id("_storage"), v.null())),
+        imageUrls: v.optional(v.array(v.string())),
+        imageStorageIds: v.optional(v.array(v.id("_storage"))),
         likes: v.number(),
         country: v.string(),
         city: v.string(),
         category: v.string(),
-        author: v.string(),
+        authorName: v.string(),
         authorId: v.string(),
         authorImageUrl: v.string(),
         upvotedBy: v.array(v.string()),
         downvotedBy: v.array(v.string()),
     })
-    .searchIndex('search_author', { searchField: 'author' })
+    .searchIndex('search_author', { searchField: 'authorName' })
     .searchIndex('search_title', { searchField: 'title' })
     .searchIndex('search_body', { searchField: 'article' }),
 
@@ -50,7 +53,7 @@ const schema = defineSchema({
         likes: v.number(),
         upvotedBy: v.array(v.string()),
         downvotedBy: v.array(v.string()),
-    }),
+    })
 });
 // console.log(schemaToMermaid(schema));
 

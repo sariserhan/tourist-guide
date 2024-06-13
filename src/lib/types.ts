@@ -29,7 +29,7 @@ export type PostPropsWithId = ForumCardProps & {
 }
 
 export interface PostImageProps {
-    setImage: Dispatch<SetStateAction<string>>;
-    setImageStorageId: Dispatch<SetStateAction<Id<"_storage"> | null>>;
-    image: string;
+    setImages: Dispatch<SetStateAction<string[]>>;
+    setImageStorageIds: Dispatch<SetStateAction<(Id<"_storage">[] | undefined)>>;
+    images: Array<string>;
 }

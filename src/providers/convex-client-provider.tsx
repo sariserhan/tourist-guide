@@ -1,11 +1,10 @@
 "use client";
 
-// import { Loading } from "@/components/ui/loading";
+import LoadingComponent from "@/components/loading-component";
 import { ClerkProvider, useAuth } from "@clerk/nextjs";
 import { AuthLoading, Authenticated, Unauthenticated, ConvexReactClient } from "convex/react";
 import { ConvexProviderWithClerk } from "convex/react-clerk";
 import { dark, neobrutalism } from '@clerk/themes';
-import layout from '../app/(forum)/forum/layout';
 
 const convex = new ConvexReactClient(process.env.NEXT_PUBLIC_CONVEX_URL!);
 
@@ -31,9 +30,9 @@ export default function ConvexClientProvider({
             }}
           >
           <ConvexProviderWithClerk useAuth={useAuth} client={convex}>
-            {/* <AuthLoading>
-              <Loading />
-            </AuthLoading> */}
+            <AuthLoading>
+              <LoadingComponent />
+            </AuthLoading>
             <Authenticated>
               {children}
             </Authenticated>

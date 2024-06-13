@@ -28,11 +28,24 @@ const handleClerkWebhook = httpAction(async (ctx, request) => {
         clerkId: event.data.id,
         imageUrl: event.data.image_url,
         email: event.data.email_addresses[0].email_address,
+        userName: event.data.username!,
       });
       break;
     case "user.deleted":
       await ctx.runMutation(internal.users.deleteUser, {
         clerkId: event.data.id as string,
+      });
+      break;
+    case "session.ended":
+      await ctx.runMutation(internal.users.updateUserSession, {
+        clerkId: event.data.user_id,
+        isOnline: false,
+      });
+      break;
+    case "session.created":
+      await ctx.runMutation(internal.users.updateUserSession, {
+        clerkId: event.data.user_id,
+        isOnline: true,
       });
       break;
   }

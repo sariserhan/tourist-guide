@@ -1,11 +1,12 @@
 "use client";
 
-import { ChangeEvent, useRef, useState, useEffect } from "react";
+import globeData from "@/lib/globe.json";
 import countryData from "@/lib/globe.json";
+import InterestedCheckbox from "./interested-checkbox";
+import { ChangeEvent, useRef, useState, useEffect } from "react";
 import { useSelectedCountry } from '@/providers/selected-country-provider';
 import { PlaceholdersAndVanishInput } from "./ui/placeholders-and-vanish-input";
 import { useRouter } from "next/navigation";
-import globeData from "@/lib/globe.json";
 
 export function SearchCountry() {
     const { selectedCountry, setSelectedCountry } = useSelectedCountry();
@@ -15,16 +16,16 @@ export function SearchCountry() {
 
     useEffect(() => {
         function handleClickOutside(event: MouseEvent) {
-          if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
             setShowCountries(false);
-          }
+            }
         }
 
         document.body.addEventListener('click', handleClickOutside);
         return () => {
-          document.body.removeEventListener('click', handleClickOutside);
+            document.body.removeEventListener('click', handleClickOutside);
         };
-      }, [showCountries]);
+    }, [showCountries]);
 
     const countries = countryData.features.map(({ properties }) => (
         properties.name
@@ -32,23 +33,25 @@ export function SearchCountry() {
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setSelectedCountry(e.target.value);
-     };
+    };
 
-     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("submitted");
         router.push(`/forum?country=${selectedCountry}&category=general&city=`);
-      };
+    };
 
-  return (
-    <div className="relative w-[17rem] z-50" >
-        <PlaceholdersAndVanishInput
-            placeholders={[...countries]}
-            textValue={selectedCountry}
-            onChange={(e) => handleChange(e)}
-            onSubmit={onSubmit}
-            countries={countries}
-        />
+    return (
+    <div className="relative  z-50" >
+        <div className="flex items-center justify-normal gap-5">
+            <PlaceholdersAndVanishInput
+                placeholders={[...countries]}
+                textValue={selectedCountry}
+                onChange={(e) => handleChange(e)}
+                onSubmit={onSubmit}
+                countries={countries}
+            />
+            <InterestedCheckbox country={selectedCountry}/>
+        </div>
 
         {showCountries && (
             <ul className="absolute z-10 bg-white border border-gray-300 rounded-lg mt-1 w-full max-h-[50rem] overflow-y-auto"
@@ -88,7 +91,7 @@ export function SearchCountry() {
             </ul>
         }
     </div>
-  );
+    );
 }
 
 export function SearchCity({country}: {country: string}) {
@@ -103,29 +106,28 @@ export function SearchCity({country}: {country: string}) {
     useEffect(() => {
         setSelectedCity("");
         function handleClickOutside(event: MouseEvent) {
-          if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
-            setShowCities(false);
-          }
+            if (dropdownRef.current && !dropdownRef.current.contains(event.target as Node)) {
+                setShowCities(false);
+            }
         }
 
         document.body.addEventListener('click', handleClickOutside);
         return () => {
-          document.body.removeEventListener('click', handleClickOutside);
+            document.body.removeEventListener('click', handleClickOutside);
         };
 
-      }, [selectedCountry, setSelectedCity]);
+    }, [selectedCountry, setSelectedCity]);
 
-      const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
+    const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        console.log("submitted");
         router.push(`/forum?country=${country}&category=general&city=${selectedCity}`);
-      };
+    };
 
     const handleChange = (e: ChangeEvent<HTMLInputElement>) => {
         setSelectedCity(e.target.value);
-     };
+    };
 
-  return (
+    return (
     <div className="relative w-[17rem] z-50" >
         {cities.length > 0 &&
         <PlaceholdersAndVanishInput
@@ -173,7 +175,7 @@ export function SearchCity({country}: {country: string}) {
             </ul>
         }
     </div>
-  );
+    );
 }
 
 

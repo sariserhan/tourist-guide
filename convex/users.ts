@@ -31,6 +31,8 @@ export const createUser = internalMutation({
       email: args.email,
       imageUrl: args.imageUrl,
       userName: args.userName,
+      interestedCountries: [],
+      isOnline: true,
     });
   },
 });
@@ -38,6 +40,7 @@ export const createUser = internalMutation({
 export const updateUser = internalMutation({
   args: {
     clerkId: v.string(),
+    userName: v.string(),
     imageUrl: v.string(),
     email: v.string(),
   },
@@ -53,21 +56,30 @@ export const updateUser = internalMutation({
 
     await ctx.db.patch(user._id, {
       imageUrl: args.imageUrl,
+      userName: args.userName,
       email: args.email,
     });
+  },
+});
 
-    // const podcast = await ctx.db
-    //   .query("forum")
-    //   .filter((q) => q.eq(q.field("authorId"), args.clerkId))
-    //   .collect();
+export const updateUserSession = internalMutation({
+  args: {
+    clerkId: v.string(),
+    isOnline: v.boolean(),
+  },
+  async handler(ctx, args) {
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
+      .unique();
 
-    // await Promise.all(
-    //   podcast.map(async (p) => {
-    //     await ctx.db.patch(p._id, {
-    //       authorImageUrl: args.imageUrl,
-    //     });
-    //   })
-    // );
+    if (!user) {
+      throw new ConvexError("User not found");
+    }
+
+    await ctx.db.patch(user._id, {
+      isOnline: args.isOnline,
+    });
   },
 });
 

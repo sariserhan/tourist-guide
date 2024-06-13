@@ -3,8 +3,10 @@
 import Image from "next/image";
 import Divider from "@/components/divider";
 import Replies from "@/components/replies";
+import BreadCrumb from "@/components/breadcrumb-custom";
 import DeleteComponent from "@/components/delete-component";
 import PopoverComponent from "@/components/popover-component";
+import LikesCounter from "@/components/likes-counter";
 import { z } from "zod";
 import { notFound } from 'next/navigation';
 import { useUser } from "@clerk/nextjs";
@@ -19,6 +21,9 @@ import { toast } from "@/components/ui/use-toast";
 import { zodResolver } from "@hookform/resolvers/zod";
 import { formatCreationTime } from "@/lib/utils";
 import { LikeButton, DisLikeButton } from "@/components/like-dislike-button";
+import { ForumCategoriesProps } from "@/lib/types";
+import IsAuthorOnline from "@/components/is-author-online";
+import { HorizontalScroll } from "@/components/horizontal-scroll";
 
 interface paramsProps {
   slug: Id<"posts">
@@ -55,19 +60,20 @@ export default function SlugPage({ params }: { params: paramsProps }) {
     _id: id,
     _creationTime: creationTime,
     article,
-    author,
+    authorName,
     authorId,
     authorImageUrl,
     category,
     city,
     country,
     downvotedBy,
-    imageStorageId,
-    imageUrl,
+    imageStorageIds,
+    imageUrls,
     likes,
     title,
     upvotedBy
   } = posts as Doc<"posts">;
+
 
   const onSubmit = async (data: z.infer<typeof FormSchema>) => {
     await createComment({
@@ -87,46 +93,45 @@ export default function SlugPage({ params }: { params: paramsProps }) {
     <main className="min-h-screen backdrop-filter backdrop-blur-xl bg-gray-100">
       <div className="flex items-center justify-center px-32 py-20">
         <div className="border-t border-gray-300 p-8 bg-white shadow-lg rounded-lg w-full max-w-3xl">
-          <div className="flex flex-row-reverse">
-            {isSignedIn && user.username === author &&
+        <BreadCrumb country={country} city={city} category={category as ForumCategoriesProps["category"]} title={title.slice(0,10)}/>
+          <div className="flex flex-row-reverse items-center">
+            <p className="text-sm">{formatCreationTime(creationTime)}</p>
+            {isSignedIn && user.username === authorName &&
               <DeleteComponent
                 postId={id}
                 country={country}
                 city={city}
                 category={category}
-                imageStorageId={imageStorageId as Id<"_storage">}
+                imageStorageIds={imageStorageIds as Id<"_storage">[]}
               />
             }
           </div>
           <h1 className="text-xl font-bold mb-4">{title}</h1>
-          <article className="prose mb-4">{article}</article>
-          {imageUrl && (
-            <Image
-              src={imageUrl}
-              alt={title}
-              width={700}
-              height={700}
-              className="mb-4 w-full h-auto object-cover rounded-lg"
-            />
-          )}
-          <div className="flex justify-between items-center">
-            <p className="text-sm text-gray-500 mb-2 flex items-center">
-              Posted by
-              <Image
-                src={authorImageUrl}
-                alt={author}
-                width={24}
-                height={24}
-                className="rounded-full inline-block mx-2"
-              />
-              {author} on {new Date(creationTime).toLocaleDateString()}
-            </p>
-            <div className="flex items-center mb-4">
-              <LikeButton posts={posts} username={user?.username || ''} isSignedIn={isSignedIn || false} />
-              <p className="mx-2 font-semibold text-xl text-gray-700">{likes}</p>
-              <DisLikeButton posts={posts} username={user?.username || ''} isSignedIn={isSignedIn || false} />
+          <article className="prose mb-4 whitespace-normal break-words">{article}</article>
+            {imageUrls && (
+              <HorizontalScroll images={imageUrls as string[]} />
+            )}
+            <div className="flex justify-between items-center mt-2">
+              <div className="flex space-x-2 items-center">
+                <p className="text-sm text-gray-500">
+                  Posted by
+                  <Image
+                    src={authorImageUrl}
+                    alt={authorName}
+                    width={24}
+                    height={24}
+                    className="rounded-full inline-block mx-2"
+                  />
+                  {authorName}
+                </p>
+                <IsAuthorOnline authorId={authorId} />
+              </div>
+              <div className="flex items-center mb-4">
+                <LikeButton posts={posts} username={user?.username || ''} isSignedIn={isSignedIn || false} />
+                <LikesCounter likes={likes} className='font-medium text-center text-gray-900 dark:text-gray-50'/>
+                <DisLikeButton posts={posts} username={user?.username || ''} isSignedIn={isSignedIn || false} />
+              </div>
             </div>
-          </div>
           <div className="mt-4">
             <h2 className="text-xl font-semibold mb-2">Comments</h2>
             <Form {...form}>
@@ -165,7 +170,7 @@ export default function SlugPage({ params }: { params: paramsProps }) {
                 <div className="flex flex-col h-full">
                   <div className="flex items-center justify-between">
                     <p className="text-gray-700 text-sm py-2">{comment.text}</p>
-                    {isSignedIn && user.username === author &&
+                    {isSignedIn && user.username === authorName &&
                       <DeleteComponent commentId={comment._id} />
                     }
                   </div>
@@ -186,7 +191,7 @@ export default function SlugPage({ params }: { params: paramsProps }) {
                     </div>
                     <div className="flex items-center mb-2">
                       <LikeButton comment={comment} username={user?.username || ''} isSignedIn={isSignedIn || false} />
-                      <p className="mx-2 font-semibold text-sm text-gray-700">{comment.likes}</p>
+                      <LikesCounter likes={comment.likes} className="font-semibold text-gray-700"/>
                       <DisLikeButton comment={comment} username={user?.username || ''} isSignedIn={isSignedIn || false} />
                     </div>
                   </div>

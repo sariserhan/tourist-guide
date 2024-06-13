@@ -24,8 +24,6 @@ export function PlaceholdersAndVanishInput({
   const [currentPlaceholder, setCurrentPlaceholder] = useState(0);
   const { selectedCountry, setSelectedCountry, selectedCity, setSelectedCity } = useSelectedCountry();
 
-
-
   useEffect(() => {
       setValue(textValue);
       const startAnimation = () => {

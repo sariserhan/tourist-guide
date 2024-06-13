@@ -2,9 +2,10 @@ import Link from "next/link"
 import Globe from "./globe"
 import Logo from "./logo"
 import Image from "next/image"
+import { Input } from "./ui/input"
 
 const Contact = () => {
-  return (
+    return (
         <section id="contact" className="">
         <div className="mx-auto max-w-screen-xl px-4 py-16 sm:px-6 lg:px-8">
             <div className="flex w-full justify-center mt-[20rem]">
@@ -15,32 +16,35 @@ const Contact = () => {
                     <form action="#" className="space-y-4">
                         <div>
                             <label className="sr-only" htmlFor="name">Name</label>
-                            <input
+                            <Input
                             className="w-full rounded-lg bg-gray-50 border border-gray-200 p-3 text-sm"
                             placeholder="Name"
                             type="text"
                             id="name"
+                            value={undefined}
                             />
                         </div>
 
                         <div className="grid grid-cols-1 gap-4 sm:grid-cols-2">
                             <div>
                             <label className="sr-only" htmlFor="email">Email</label>
-                            <input
+                            <Input
                                 className="w-full rounded-lg bg-gray-50 border border-gray-200 p-3 text-sm"
                                 placeholder="Email address"
                                 type="email"
                                 id="email"
+                                value={undefined}
                             />
                             </div>
 
                             <div>
                             <label className="sr-only" htmlFor="phone">Phone</label>
-                            <input
+                            <Input
                                 className="w-full rounded-lg bg-gray-50 border border-gray-200 p-3 text-sm"
                                 placeholder="Phone Number"
                                 type="tel"
                                 id="phone"
+                                value={undefined}
                             />
                             </div>
                         </div>
@@ -86,7 +90,7 @@ const Contact = () => {
             </div>
         </footer>
         </section>
-  )
+    )
 }
 
 export default Contact

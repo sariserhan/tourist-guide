@@ -9,8 +9,8 @@ import { Input } from "@/components/ui/input";
 import { useMutation } from "convex/react";
 import { useUser } from "@clerk/nextjs";
 import { redirect, useRouter } from "next/navigation";
-import { api } from "../../../../convex/_generated/api";
-import { Id } from "../../../../convex/_generated/dataModel"
+import { api } from "@/../../convex/_generated/api";
+import { Id } from "@/../../convex/_generated/dataModel"
 import { ForumCategoriesProps } from "@/lib/types";
 import { useToast } from "@/components/ui/use-toast";
 import { useState } from "react";
@@ -33,8 +33,8 @@ const Post = ({searchParams}: {searchParams: ForumCategoriesProps}) => {
   const { toast } = useToast()
   const { country, category, city } = searchParams;
   const { isSignedIn } = useUser();
-  const [imageUrl, setImageUrl] = useState('');
-  const [imageStorageId, setImageStorageId] = useState<Id<"_storage"> | null>(null)
+  const [imageUrls, setImageUrls] = useState<string[]>([]);
+  const [imageStorageIds, setImageStorageIds] = useState<Id<"_storage">[] | undefined>([]);
   const storePost = useMutation(api.posts.addPost);
   const router = useRouter();
 
@@ -49,15 +49,15 @@ const Post = ({searchParams}: {searchParams: ForumCategoriesProps}) => {
       country,
       city,
       category,
-      imageUrl,
-      imageStorageId: imageStorageId,
+      imageUrls,
+      imageStorageIds,
     });
     toast({
       description: "Article posted successfully",
     })
     router.push('/forum?country=' + country + '&city=' + city + '&category=' + category);
+    router.refresh();
   };
-
 
   return (
       <div className="flex justify-center items-center h-screen">
@@ -74,15 +74,14 @@ const Post = ({searchParams}: {searchParams: ForumCategoriesProps}) => {
               }
                 Category: <span className="font-normal">{category}</span>
             </h2>
-            <Input id="title" type="text" placeholder="Title" {...register("title")} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <Input id="title" type="text" placeholder="Title" value={undefined} {...register("title")} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
             {errors.title && <span className="text-red-500">{errors.title.message}</span>}
-
             <Textarea id="article" placeholder="Article" {...register("article")} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
             {errors.article && <span className="text-red-500">{errors.article.message}</span>}
             <UploadFile
-              setImage={setImageUrl}
-              setImageStorageId={setImageStorageId}
-              image={imageUrl}
+              setImages={setImageUrls}
+              setImageStorageIds={setImageStorageIds}
+              images={imageUrls}
             />
             <Button type="submit" className="bg-blue-500 text-white py-2 px-4 rounded hover:bg-blue-600 focus:outline-none focus:bg-blue-600">Submit</Button>
           </div>
