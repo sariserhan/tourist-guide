@@ -17,6 +17,7 @@ import type {
 import type * as comments from "../comments.js";
 import type * as files from "../files.js";
 import type * as http from "../http.js";
+import type * as messages from "../messages.js";
 import type * as posts from "../posts.js";
 import type * as replies from "../replies.js";
 import type * as users from "../users.js";
@@ -33,6 +34,7 @@ declare const fullApi: ApiFromModules<{
   comments: typeof comments;
   files: typeof files;
   http: typeof http;
+  messages: typeof messages;
   posts: typeof posts;
   replies: typeof replies;
   users: typeof users;

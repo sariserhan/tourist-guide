@@ -45,6 +45,19 @@ export const getAllComments = query({
   },
 });
 
+export const getAllCommentsCount = query({
+  args: {
+    postId: v.id("posts"),
+  },
+  handler: async (ctx, args) => {
+    const comments = await ctx.db
+    .query("comments")
+    .filter((q) => q.eq(q.field("postId"), args.postId))
+    .collect();
+    return comments.length;
+  },
+});
+
 // export const addReplyToComment = mutation({
 //   args: {
 //     replyId: v.id("replies"),

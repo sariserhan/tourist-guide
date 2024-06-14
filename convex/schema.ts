@@ -53,7 +53,17 @@ const schema = defineSchema({
         likes: v.number(),
         upvotedBy: v.array(v.string()),
         downvotedBy: v.array(v.string()),
+    }),
+
+    messages: defineTable({
+        senderId: v.string(),
+        receiverId: v.string(),
+        senderName: v.string(),
+        receiverName: v.string(),
+        text: v.string(),
     })
+    .searchIndex('search_senderId', { searchField: 'senderId' })
+    .searchIndex('search_receiverId', { searchField: 'receiverId' }),
 });
 // console.log(schemaToMermaid(schema));
 

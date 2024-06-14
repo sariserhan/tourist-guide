@@ -1,8 +1,9 @@
 "use client";
 
 import Link from "next/link";
-import Image from "next/image";
+import CommentCount from "./comment-count";
 import LikesCounter from './likes-counter';
+import PopoverMessage from "./popover-message";
 import IsAuthorOnline from "./is-author-online";
 import DeleteComponent from "./delete-component";
 import { Id } from "../../convex/_generated/dataModel";
@@ -12,8 +13,9 @@ import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
 import { HorizontalScroll } from "./horizontal-scroll";
 import { formatCreationTime } from "@/lib/utils";
-import { ForumCategoriesProps } from "@/lib/types";
+import { GoCommentDiscussion } from "react-icons/go";
 import { useEffect, useState } from "react";
+import { ForumCategoriesProps } from "@/lib/types";
 import { DisLikeButton, LikeButton } from "./like-dislike-button";
 
 const ForumCard = ({ country, category, city }: ForumCategoriesProps) => {
@@ -66,55 +68,60 @@ const ForumCard = ({ country, category, city }: ForumCategoriesProps) => {
         </div>
       )}
       {postsToShow.map(post => (
-        <div key={post._id} className={`rounded-lg border border-gray-200 bg-white p-4 mb-2 shadow-sm dark:border-gray-800 dark:bg-gray-950 ${initialPostCount < filteredPosts.length && !showAllPosts && "-mt-6"}`}>
+        <div key={post._id} className={`relative rounded-lg border border-gray-200 bg-white p-4 mb-2 shadow-sm dark:border-gray-800 dark:bg-gray-950 ${initialPostCount < filteredPosts.length && !showAllPosts && "-mt-6"}`}>
           <div className="flex items-center justify-between">
             <Link href={`/forum/${post._id}`}>
               <h2 className="text-lg text-wrap font-semibold hover:bg-accent hover:text-accent-foreground">{post.title}</h2>
             </Link>
-            <div className="flex items-center justify-between">
-              {isSignedIn && user?.username === post.authorName && (
-                <DeleteComponent
-                  postId={post._id}
-                  imageStorageIds={post.imageStorageIds as Id<"_storage">[]}
-                />
-              )}
-              <div className="text-sm text-nowrap text-gray-500 dark:text-gray-400">{formatCreationTime(post._creationTime)}</div>
-            </div>
-          </div>
-          <div className="mt-2 text-sm text-gray-500 dark:text-gray-400 hover:bg-accent hover:text-accent-foreground ">
-            {post.imageUrls && post.imageUrls.length > 0 ? (
-              <div className="flex justify-center items-center border border-rounded scroll-x">
-                <HorizontalScroll images={post.imageUrls as string[]} />
-              </div>
-            ) : (
-              <Link href={`/forum/${post._id}`}>{post.article}</Link>
+          <div className="flex items-center justify-between">
+            {isSignedIn && user?.username === post.authorName && (
+              <DeleteComponent
+                postId={post._id}
+                imageStorageIds={post.imageStorageIds as Id<"_storage">[]}
+              />
             )}
-          </div>
-          <div className="mt-4 flex items-center justify-between">
-            <div className="flex items-center space-x-2">
-              <div className="flex items-center space-x-2 cursor-pointer p-2 hover:bg-accent hover:text-accent-foreground hover:rounded-full">
-                <Image
-                  alt="Avatar"
-                  className="h-8 w-8 rounded-full"
-                  height={32}
-                  src={post.authorImageUrl}
-                  style={{
-                    aspectRatio: "32/32",
-                    objectFit: "cover",
-                  }}
-                  width={32}
-                />
-                <div className="text-sm font-medium text-gray-900 dark:text-gray-50 hover:bg-accent hover:text-accent-foreground">{post.authorName}</div>
-              </div>
-              <IsAuthorOnline authorId={post.authorId} />
-            </div>
-            <div className="flex items-center space-x-2 justify-between">
-              <LikeButton posts={post} username={user?.username || undefined} isSignedIn={isSignedIn || false} />
-              <LikesCounter likes={post.likes} className='font-medium text-center text-gray-900 dark:text-gray-50'/>
-              <DisLikeButton posts={post} username={user?.username || undefined} isSignedIn={isSignedIn || false} />
-            </div>
+            <div className="text-sm text-nowrap text-gray-500 dark:text-gray-400">{formatCreationTime(post._creationTime)}</div>
           </div>
         </div>
+        {post.imageUrls && post.imageUrls.length > 0 ?
+          <div className="mt-2 text-sm text-gray-500 dark:text-gray-400 hover:bg-accent hover:text-accent-foreground ">
+            <div className="flex justify-center items-center border border-rounded scroll-x">
+              <HorizontalScroll images={post.imageUrls as string[]} />
+            </div>
+          </div>
+        :
+          <Link href={`/forum/${post._id}`}>
+            <div className="mt-2 text-sm text-gray-500 dark:text-gray-400 hover:bg-accent hover:text-accent-foreground">
+              {post.article}
+            </div>
+          </Link>
+        }
+        <div className="flex mt-6 items-center justify-between">
+          <div className="flex items-center space-x-2">
+            <div className="relative flex items-center">
+              <PopoverMessage
+                authorImageUrl={post.authorImageUrl}
+                authorName={post.authorName}
+                authorId={post.authorId}
+              />
+              <IsAuthorOnline authorId={post.authorId} />
+            </div>
+          </div>
+          <div className="flex items-center space-x-2 justify-between">
+            <Link href={`/forum/${post._id}`}>
+              <div className="flex p-2 ml-1 space-x-1 items-center justify-center cursor-pointer hover:bg-accent hover:text-accent-foreground bg-gray-50 rounded-2xl">
+                <GoCommentDiscussion
+                  className="h-4 w-4 text-gray-900 dark:text-gray-50"
+                />
+                <CommentCount postId={post._id} />
+              </div>
+            </Link>
+            <LikeButton posts={post} username={user?.username || undefined} isSignedIn={isSignedIn || false} />
+            <LikesCounter likes={post.likes} className='font-medium text-center text-gray-900 dark:text-gray-50'/>
+            <DisLikeButton posts={post} username={user?.username || undefined} isSignedIn={isSignedIn || false} />
+          </div>
+        </div>
+      </div>
       ))}
     </>
   )}
