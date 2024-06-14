@@ -84,7 +84,7 @@ const ForumCard = ({ country, category, city }: ForumCategoriesProps) => {
           </div>
         </div>
         {post.imageUrls && post.imageUrls.length > 0 ?
-          <div className="mt-2 text-sm text-gray-500 dark:text-gray-400 hover:bg-accent hover:text-accent-foreground ">
+          <div className="mt-2 text-sm text-gray-500 dark:text-gray-400 hover:bg-accent hover:text-accent-foreground">
             <div className="flex justify-center items-center border border-rounded scroll-x">
               <HorizontalScroll images={post.imageUrls as string[]} />
             </div>

@@ -2,7 +2,6 @@
 
 import globeData from "@/lib/globe.json";
 import countryData from "@/lib/globe.json";
-import InterestedCheckbox from "./interested-checkbox";
 import { ChangeEvent, useRef, useState, useEffect } from "react";
 import { useSelectedCountry } from '@/providers/selected-country-provider';
 import { PlaceholdersAndVanishInput } from "./ui/placeholders-and-vanish-input";
@@ -50,7 +49,6 @@ export function SearchCountry() {
                 onSubmit={onSubmit}
                 countries={countries}
             />
-            <InterestedCheckbox country={selectedCountry}/>
         </div>
 
         {showCountries && (

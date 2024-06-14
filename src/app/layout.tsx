@@ -1,6 +1,6 @@
+import "./globals.css";
 import ConvexClientProvider from "@/providers/convex-client-provider";
 import Logo from "@/components/logo";
-import "./globals.css";
 import type { Metadata } from "next";
 import { Inter } from "next/font/google";
 import { FloatingNav } from "@/components/ui/floating-navbar";
@@ -13,7 +13,7 @@ import {
   UserButton
 } from '@clerk/nextjs'
 import Link from "next/link";
-import Layout from "@/components/background-layout";
+import Messages from "@/components/messages";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -44,7 +44,12 @@ export default function RootLayout({
               </Link>
             </SignedOut>
             <SignedIn>
-              <UserButton />
+              <div className="flex items-center justify-center space-x-2">
+                <Link href="/message">
+                  <Messages />
+                </Link>
+                <UserButton />
+              </div>
             </SignedIn>
           </div>
             {children}
