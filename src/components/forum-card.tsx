@@ -1,60 +1,94 @@
 "use client";
 
-import Image from "next/image";
 import Link from "next/link";
-import DeleteComponent from "./delete-component";
+import Image from "next/image";
 import LikesCounter from './likes-counter';
 import IsAuthorOnline from "./is-author-online";
-import { api } from "../../convex/_generated/api";
-import { ForumCategoriesProps } from "@/lib/types";
-import { formatCreationTime } from "@/lib/utils";
+import DeleteComponent from "./delete-component";
 import { Id } from "../../convex/_generated/dataModel";
-import { DisLikeButton, LikeButton } from "./like-dislike-button";
-import { useQuery } from "convex/react";
+import { api } from "../../convex/_generated/api";
+import { Badge } from "./ui/badge";
 import { useUser } from "@clerk/nextjs";
+import { useQuery } from "convex/react";
 import { HorizontalScroll } from "./horizontal-scroll";
-import { CarouselDApi } from "./carousel";
+import { formatCreationTime } from "@/lib/utils";
+import { ForumCategoriesProps } from "@/lib/types";
+import { useEffect, useState } from "react";
+import { DisLikeButton, LikeButton } from "./like-dislike-button";
 
-const ForumCard = ({country, category, city}: ForumCategoriesProps) => {
-  const {isSignedIn, user} = useUser();
+const ForumCard = ({ country, category, city }: ForumCategoriesProps) => {
+  const { isSignedIn, user } = useUser();
+  const [initialPostCount, setInitialPostCount] = useState(0);
+  const [newPostCount, setNewPostCount] = useState(0);
+  const [showAllPosts, setShowAllPosts] = useState(false);
+  const filteredPosts = useQuery(api.posts.listPosts, { country, city, category });
 
-  const allPosts = useQuery(api.posts.listPosts, { country, city, category });
-  if (!allPosts) {
-    return <div className="flex items-center justify-center font-bold">No Post Yet</div>;
+  useEffect(() => {
+    if (filteredPosts) {
+      // Update initial post count if it's the first load
+      if (initialPostCount === 0) {
+        setInitialPostCount(filteredPosts.length);
+      }
+
+      // Update new post count whenever filteredPosts changes
+      if (filteredPosts.length > initialPostCount) {
+        setNewPostCount(filteredPosts.length - initialPostCount);
+        setShowAllPosts(false)
+      }
+    }
+  }, [filteredPosts, initialPostCount]);
+
+  const handleShowNewPosts = () => {
+    setShowAllPosts(true);
+    filteredPosts && setInitialPostCount(filteredPosts.length); // Reset initial post count to current post count
+    setNewPostCount(0); // Reset new post count
+  };
+  if (!filteredPosts) {
+    return <div className="flex items-center justify-center font-bold">Loading...</div>;
   }
-
-  const posts = allPosts?.filter((post) => (
-    post.country === country && post.city === city && post.category === category)
-  )
+  const postsToShow = showAllPosts ? filteredPosts : filteredPosts.slice(-initialPostCount);
 
   return (
     <>
-      {posts?.map((post) => (
-        <div key={post._id} className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+    {filteredPosts.length === 0 ? (
+      <div className="flex items-center justify-center font-bold">No Post Yet</div>
+      ) : (
+      <>
+      {newPostCount > 0 && !showAllPosts && (newPostCount !== initialPostCount) && (
+        <div className="flex justify-center items-center">
+          <Badge
+            className="-mt-[5rem] cursor-pointer"
+            onClick={handleShowNewPosts}
+            variant="outline"
+          >
+            Show New Posts ({newPostCount})
+          </Badge>
+        </div>
+      )}
+      {postsToShow.map(post => (
+        <div key={post._id} className={`rounded-lg border border-gray-200 bg-white p-4 mb-2 shadow-sm dark:border-gray-800 dark:bg-gray-950 ${initialPostCount < filteredPosts.length && !showAllPosts && "-mt-6"}`}>
           <div className="flex items-center justify-between">
-            <Link
-              href={`/forum/${post._id}`}
-            >
+            <Link href={`/forum/${post._id}`}>
               <h2 className="text-lg text-wrap font-semibold hover:bg-accent hover:text-accent-foreground">{post.title}</h2>
             </Link>
             <div className="flex items-center justify-between">
-              {isSignedIn && user.username === post.authorName &&
+              {isSignedIn && user?.username === post.authorName && (
                 <DeleteComponent
                   postId={post._id}
                   imageStorageIds={post.imageStorageIds as Id<"_storage">[]}
-              />
-              }
+                />
+              )}
               <div className="text-sm text-nowrap text-gray-500 dark:text-gray-400">{formatCreationTime(post._creationTime)}</div>
             </div>
           </div>
           <div className="mt-2 text-sm text-gray-500 dark:text-gray-400 hover:bg-accent hover:text-accent-foreground ">
-          {post.imageUrls && post.imageUrls?.length>0 ?
-            <div className="flex justify-center items-center border border-rounded scroll-x">
-              <HorizontalScroll images={post.imageUrls as string[]} />
-            </div>
-            :
-            post.article
-          }
+            {post.imageUrls && post.imageUrls.length > 0 ? (
+              <div className="flex justify-center items-center border border-rounded scroll-x">
+                <HorizontalScroll images={post.imageUrls as string[]} />
+              </div>
+            ) : (
+              <Link href={`/forum/${post._id}`}>{post.article}</Link>
+            )}
           </div>
           <div className="mt-4 flex items-center justify-between">
             <div className="flex items-center space-x-2">
@@ -83,7 +117,9 @@ const ForumCard = ({country, category, city}: ForumCategoriesProps) => {
         </div>
       ))}
     </>
-  );
+  )}
+  </>
+  )
 };
 
 export default ForumCard;

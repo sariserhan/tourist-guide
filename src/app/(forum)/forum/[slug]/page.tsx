@@ -127,9 +127,9 @@ export default function SlugPage({ params }: { params: paramsProps }) {
                 <IsAuthorOnline authorId={authorId} />
               </div>
               <div className="flex items-center mb-4">
-                <LikeButton posts={posts} username={user?.username || ''} isSignedIn={isSignedIn || false} />
+                <LikeButton posts={posts} username={user?.username || undefined} isSignedIn={isSignedIn || false} />
                 <LikesCounter likes={likes} className='font-medium text-center text-gray-900 dark:text-gray-50'/>
-                <DisLikeButton posts={posts} username={user?.username || ''} isSignedIn={isSignedIn || false} />
+                <DisLikeButton posts={posts} username={user?.username || undefined} isSignedIn={isSignedIn || false} />
               </div>
             </div>
           <div className="mt-4">
@@ -190,9 +190,9 @@ export default function SlugPage({ params }: { params: paramsProps }) {
                       <PopoverComponent commentId={comment._id}/>
                     </div>
                     <div className="flex items-center mb-2">
-                      <LikeButton comment={comment} username={user?.username || ''} isSignedIn={isSignedIn || false} />
+                      <LikeButton comment={comment} username={user?.username || undefined} isSignedIn={isSignedIn || false} />
                       <LikesCounter likes={comment.likes} className="font-semibold text-gray-700"/>
-                      <DisLikeButton comment={comment} username={user?.username || ''} isSignedIn={isSignedIn || false} />
+                      <DisLikeButton comment={comment} username={user?.username || undefined} isSignedIn={isSignedIn || false} />
                     </div>
                   </div>
                   <div>
