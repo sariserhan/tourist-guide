@@ -3,7 +3,7 @@ import { FaPeopleGroup, FaTemperatureHigh, FaPhoneFlip, FaLandmarkFlag, FaLangua
 import { RiGovernmentFill } from "react-icons/ri";
 import { GiAfrica, GiSouthAmerica, GiAustralia, GiEuropeanFlag } from "react-icons/gi";
 import { BsGlobeCentralSouthAsia } from "react-icons/bs";
-import { GiVikingChurch, GiLifeBar, GiModernCity, GiEarthAfricaEurope, GiIsland } from "react-icons/gi";
+import { GiVikingChurch, GiLifeBar, GiEarthAfricaEurope, GiIsland } from "react-icons/gi";
 import { FaChartArea, FaMosque, FaChurch, FaStarOfDavid } from "react-icons/fa";
 import { MdOutlineCurrencyExchange, MdTempleHindu, MdTempleBuddhist } from "react-icons/md";
 import getUnicodeFlagIcon from 'country-flag-icons/unicode'
@@ -35,8 +35,8 @@ const Stats = ({stats}: {stats: StatsProps}) => {
     const surface_area = stats.surface_area ? ((stats.surface_area / 1e6) > 1 ? (stats.surface_area / 1e6).toFixed(2) + 'M km²' : (stats.surface_area / 1e3).toFixed(2) + 'K km²') : null
 
     return (
-        <div className="flex justify-center m-10 p-10 z-50">
-        <div className="grid sm:grid-cols-4 gap-4 justify-center ">
+        <div className="flex flex-1 justify-center w-[20rem]">
+        <div className="grid grid-cols-1 gap-2 justify-center ">
             {stats.name &&
             <article className="flex items-center gap-4 rounded-lg border border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
                 <span className="p-3 rounded-full border ">

@@ -20,9 +20,14 @@ interface PopoverMessageProps {
   authorId: string;
   authorName: string;
   authorImageUrl: string;
+  about: {
+    country: string;
+    city: string;
+    category: string;
+  }
 }
 
-const PopoverMessage = ({authorId, authorName, authorImageUrl}: PopoverMessageProps) => {
+const PopoverMessage = ({authorId, authorName, authorImageUrl, about}: PopoverMessageProps) => {
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
   const { user } = useUser();
   const createMessage = useMutation(api.messages.createMessage);
@@ -44,9 +49,12 @@ const PopoverMessage = ({authorId, authorName, authorImageUrl}: PopoverMessagePr
     await createMessage({
       senderId: user?.id!,
       senderName: user?.username!,
+      senderPicture: user?.imageUrl!,
       receiverId: authorId,
       receiverName: authorName,
-      text: data.message
+      receiverPicture: authorImageUrl,
+      text: data.message,
+      about: about,
     });
     formMessage.reset({ message: '' });
     toast({

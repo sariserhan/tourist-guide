@@ -10,9 +10,11 @@ import {
 
 type BreadCrumbProps = ForumCategoriesProps & {
   title?: string;
+  inbox?: boolean;
+  messageFrom?: string;
 }
 
-export default function BreadCrumb({country, city, category, title}: BreadCrumbProps) {
+export default function BreadCrumb({country, city, category, title, inbox, messageFrom}: BreadCrumbProps) {
   return (
     <Breadcrumb>
       <BreadcrumbList>
@@ -61,6 +63,24 @@ export default function BreadCrumb({country, city, category, title}: BreadCrumbP
             <BreadcrumbItem>
               <BreadcrumbPage>{country}</BreadcrumbPage>
             </BreadcrumbItem>
+          }
+          {
+            inbox && !messageFrom &&
+            <BreadcrumbItem>
+            <BreadcrumbPage>Inbox</BreadcrumbPage>
+          </BreadcrumbItem>
+          }
+          {
+            messageFrom &&
+            <>
+              <BreadcrumbItem>
+                <BreadcrumbLink href={'/message'}>Inbox</BreadcrumbLink>
+              </BreadcrumbItem>
+              <BreadcrumbSeparator />
+              <BreadcrumbItem>
+                <BreadcrumbPage>{messageFrom}</BreadcrumbPage>
+              </BreadcrumbItem>
+            </>
           }
 
       </BreadcrumbList>

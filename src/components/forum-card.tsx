@@ -68,7 +68,7 @@ const ForumCard = ({ country, category, city }: ForumCategoriesProps) => {
         </div>
       )}
       {postsToShow.map(post => (
-        <div key={post._id} className={`relative rounded-lg border border-gray-200 bg-white p-4 mb-2 shadow-sm dark:border-gray-800 dark:bg-gray-950 ${initialPostCount < filteredPosts.length && !showAllPosts && "-mt-6"}`}>
+        <div key={post._id} className="relative rounded-lg border border-gray-200 bg-white p-4 mb-2 shadow-sm dark:border-gray-800 dark:bg-gray-950">
           <div className="flex items-center justify-between">
             <Link href={`/forum/${post._id}`}>
               <h2 className="text-lg text-wrap font-semibold hover:bg-accent hover:text-accent-foreground">{post.title}</h2>
@@ -103,6 +103,7 @@ const ForumCard = ({ country, category, city }: ForumCategoriesProps) => {
                 authorImageUrl={post.authorImageUrl}
                 authorName={post.authorName}
                 authorId={post.authorId}
+                about={{country, city, category}}
               />
               <IsAuthorOnline authorId={post.authorId} />
             </div>

@@ -87,23 +87,6 @@ export const listPosts = query({
     },
 });
 
-// export const addCommentToPost = mutation({
-//     args: {
-//         postId: v.id("posts"),
-//         commentId: v.id("comments"),
-//     },
-//     handler: async (ctx, args) => {
-//         const post = await ctx.db.get(args.postId);
-//         if (!post) {
-//             throw new ConvexError("Post not found");
-//         }
-//     await ctx.db.patch(args.postId, {
-//         commentsId: [...post.commentsId, args.commentId],
-//     });
-//     return post.commentsId;
-//     }
-// });
-
 export const getUpvoteList = query({
     args: {
         postId: v.id("posts"),

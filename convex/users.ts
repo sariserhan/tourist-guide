@@ -37,6 +37,12 @@ export const createUser = internalMutation({
   },
 });
 
+export const getOnlineUsers = query({
+  handler: async (ctx) => {
+    return await ctx.db.query("users").filter((q) => q.eq(q.field("isOnline"), true)).collect();
+  },
+});
+
 export const updateUser = internalMutation({
   args: {
     clerkId: v.string(),

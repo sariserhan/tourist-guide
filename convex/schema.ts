@@ -59,11 +59,25 @@ const schema = defineSchema({
         senderId: v.string(),
         receiverId: v.string(),
         senderName: v.string(),
+        senderPicture: v.string(),
         receiverName: v.string(),
+        receiverPicture: v.string(),
         text: v.string(),
+        about: v.object({
+            country: v.optional(v.string()),
+            city: v.optional(v.string()),
+            category: v.optional(v.string()),
+        }),
+        read: v.boolean(),
     })
     .searchIndex('search_senderId', { searchField: 'senderId' })
     .searchIndex('search_receiverId', { searchField: 'receiverId' }),
+
+    contact: defineTable({
+        contact_name: v.string(),
+        contact_email: v.string(),
+        contact_message: v.string(),
+    }),
 });
 // console.log(schemaToMermaid(schema));
 

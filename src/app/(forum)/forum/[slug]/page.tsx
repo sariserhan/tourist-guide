@@ -4,6 +4,7 @@ import Image from "next/image";
 import Divider from "@/components/divider";
 import Replies from "@/components/replies";
 import BreadCrumb from "@/components/breadcrumb-custom";
+import IsAuthorOnline from "@/components/is-author-online";
 import DeleteComponent from "@/components/delete-component";
 import PopoverComponent from "@/components/popover-component";
 import LikesCounter from "@/components/likes-counter";
@@ -22,7 +23,6 @@ import { zodResolver } from "@hookform/resolvers/zod";
 import { formatCreationTime } from "@/lib/utils";
 import { LikeButton, DisLikeButton } from "@/components/like-dislike-button";
 import { ForumCategoriesProps } from "@/lib/types";
-import IsAuthorOnline from "@/components/is-author-online";
 import { HorizontalScroll } from "@/components/horizontal-scroll";
 
 interface paramsProps {

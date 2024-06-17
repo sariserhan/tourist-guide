@@ -15,6 +15,10 @@ export async function getUserName() {
   return user?.username || null
 }
 
+export function capitalizeWords(str: string) {
+  return str.replace(/\b\w/g, (char) => char.toUpperCase());
+}
+
 export const formatCreationTime = (timestamp: number) => {
   const currentDate = new Date();
   const creationDate = new Date(timestamp);
