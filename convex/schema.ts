@@ -1,5 +1,5 @@
-import { defineSchema, defineTable } from "convex/server";
 import { v } from "convex/values";
+import { defineSchema, defineTable } from "convex/server";
 import { schemaToMermaid } from "convex-schema-mermaid";
 
 const schema = defineSchema({
@@ -78,6 +78,19 @@ const schema = defineSchema({
         contact_email: v.string(),
         contact_message: v.string(),
     }),
+
+    chat: defineTable({
+        senderId: v.string(),
+        receiverId: v.string(),
+        senderName: v.string(),
+        receiverName: v.string(),
+        chattingUsers: v.array(v.string()),
+        messages: v.array(v.object({
+            senderName: v.string(),
+            text: v.string(),
+            timestamp: v.number(),
+        })),
+    })
 });
 // console.log(schemaToMermaid(schema));
 
