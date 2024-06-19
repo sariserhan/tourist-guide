@@ -48,3 +48,23 @@ export interface SenderInfosProps {
     }
     read: boolean;
 }
+
+export type StatsProps = {
+    id?: string | undefined
+    name?: string | null
+    capital?: string | null
+    government?: string | null
+    currency_code?: string | null
+    currency?: string | null
+    continent?: string | null
+    region?: string | null
+    population?: number | null
+    calling_code?: string | number
+    surface_area?: number | null
+    national_dish?: string | null
+    religion?: string | null
+    life_expectancy?: number | null
+    yearly_avg_temperature?: number | null
+    languages?: string[]
+    cities?: string[]
+}

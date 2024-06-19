@@ -9,26 +9,7 @@ import { MdOutlineCurrencyExchange, MdTempleHindu, MdTempleBuddhist } from "reac
 import getUnicodeFlagIcon from 'country-flag-icons/unicode'
 import getSymbolFromCurrency from 'currency-symbol-map'
 import { ScrollArea } from "./ui/scroll-area";
-
-type StatsProps = {
-        id?: string | undefined
-        name?: string | null
-        capital?: string | null
-        government?: string | null
-        currency_code?: string | null
-        currency?: string | null
-        continent?: string | null
-        region?: string | null
-        population?: number | null
-        calling_code?: string | number
-        surface_area?: number | null
-        national_dish?: string | null
-        religion?: string | null
-        life_expectancy?: number | null
-        yearly_avg_temperature?: number | null
-        languages?: string[]
-        cities?: string[]
-}
+import { StatsProps } from "@/lib/types";
 
 const Stats = ({stats}: {stats: StatsProps}) => {
     const population = stats.population ? ((stats.population / 1e6).toFixed(2) + 'M') : null
@@ -224,23 +205,6 @@ const Stats = ({stats}: {stats: StatsProps}) => {
                 </div>
             </article>
             }
-            {/* {stats.cities &&
-            <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
-                <span className="p-3 rounded-full border text-stone-400">
-                    <GiModernCity size={30}/>
-                </span>
-
-                <div className="z-50 w-auto">
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Cities</p>
-                    <ScrollArea className="max-h-40 overflow-y-auto w-auto rounded-md p-4 border scroll-bar-visible">
-                        {stats.cities.map((city, index) => (
-                        <span key={index} className="inline-block px-2 py-1 mr-2 text-xs font-semibold text-white bg-gray-500 rounded-md">{city}</span>
-                    ))
-                    }
-                    </ScrollArea>
-                </div>
-            </article>
-            } */}
             </div>
         </div>
     )

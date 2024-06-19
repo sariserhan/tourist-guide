@@ -74,7 +74,7 @@ const Post = ({searchParams}: {searchParams: ForumCategoriesProps}) => {
               }
                 Category: <span className="font-normal">{category}</span>
             </h2>
-            <Input id="title" type="text" placeholder="Title" value={undefined} {...register("title")} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
+            <Input id="title" type="text" placeholder="Title" {...register("title")} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
             {errors.title && <span className="text-red-500">{errors.title.message}</span>}
             <Textarea id="article" placeholder="Article" {...register("article")} className="mt-1 block w-full border-gray-300 rounded-md shadow-sm focus:ring-blue-500 focus:border-blue-500 sm:text-sm" />
             {errors.article && <span className="text-red-500">{errors.article.message}</span>}

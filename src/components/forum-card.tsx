@@ -53,7 +53,7 @@ const ForumCard = ({ country, category, city }: ForumCategoriesProps) => {
   return (
     <>
     {filteredPosts.length === 0 ? (
-      <div className="flex  justify-center font-bold bg-white w-full h-screen rounded-lg">No Post Yet</div>
+      <div className="flex justify-center font-bold bg-white w-full h-screen rounded-lg border">No Post Yet</div>
       ) : (
       <>
       {newPostCount > 0 && !showAllPosts && (newPostCount !== initialPostCount) && (

@@ -2,6 +2,7 @@ import { api } from "@/../convex/_generated/api"
 import { fetchQuery } from "convex/nextjs"
 import { currentUser } from "@clerk/nextjs/server"
 import { redirect } from 'next/navigation'
+import AdminLoginForm from "@/components/admin"
 
 const ReadMessages = async () => {
   const user = await currentUser()
@@ -14,7 +15,8 @@ const ReadMessages = async () => {
   const messages = await fetchQuery(api.contact.listContactMessages)
   return (
     <main className="w-full flex flex-col items-center justify-center mt-20">
-      {messages.map((message) => (
+      <AdminLoginForm />
+      {/* {messages.map((message) => (
         <div key={message._id}
           className="w-3/4 border border-gray-200 p-4 my-4 rounded-md shadow-md"
         >
@@ -23,8 +25,8 @@ const ReadMessages = async () => {
             <p>User Email: {message.contact_email}</p>
           </div>
           <p className="break-words mt-2">{message.contact_message}</p>
-        </div>
-      ))}
+        </div> */}
+      {/* ))} */}
     </main>
   )
 }

@@ -1,10 +1,8 @@
 import Link from "next/link";
-import Stats from "@/components/stats";
-import ChatList from "@/components/chat-list";
 import globeData from "@/lib/globe.json";
 import ForumCard from "@/components/forum-card";
 import BreadCrumb from "@/components/breadcrumb-custom";
-import ForumCategories from "@/components/forum-categories";
+import SidebarComponent from "@/components/sidebar";
 import { Button } from "@/components/ui/button";
 import { notFound } from "next/navigation";
 import { SearchCity } from "@/components/search";
@@ -47,17 +45,14 @@ const Page = ({searchParams}: {searchParams: ForumCategoriesProps}) => {
           <section className="px-5">
             <BreadCrumb country={country} city={city} category={category}/>
           </section>
-          <div className="flex flex-1 gap-4 py-8">
-            <section className="flex flex-col gap-2 ml-4 w-[20rem]">
-              <ForumCategories country={country} city={city} category={category}/>
-              <Stats stats={statsData}/>
-            </section>
-            <div className="flex w-full space-x-4">
+          <div className="flex flex-1 gap-2 py-8">
+              <SidebarComponent side={"left"} country={country} city={city} category={category} statsData={statsData}/>
+            <div className="flex w-full space-x-2">
               <section className="w-full">
                 <ForumCard country={country} category={category} city={city}/>
               </section>
               <section>
-                <ChatList />
+                <SidebarComponent side={"right"} />
               </section>
             </div>
           </div>

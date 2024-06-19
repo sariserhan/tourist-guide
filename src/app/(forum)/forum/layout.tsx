@@ -1,20 +1,21 @@
-import Logo from "@/components/logo"
+import Logo from "@/components/logo";
 
-const layout = ({children}: {children:React.ReactNode}) => {
+const Layout = ({ children }: { children: React.ReactNode }) => {
   return (
-    <main className="min-h-screen bg-gray-100">
-        <div className='absolute left-0 top-5 z-50'>
-            <Logo />
-        </div>
-
+    <div className="flex flex-col flex-grow flex-1 min-h-screen bg-gray-100">
+      <div className='absolute left-0 top-5 z-50'>
+        <Logo />
+      </div>
+      <main className="flex-grow">
         {children}
-        <footer className='justify-center items-center backdrop-filter backdrop-blur-xl bg-gray-100'>
-            <p className="mt-4 text-center text-sm text-gray-500 lg:mt-0 lg:text-right">
-                Copyright &copy; 2024. All rights reserved.
-            </p>
-        </footer>
-    </main>
-  )
-}
+      </main>
+      <footer className='flex justify-center items-center bg-gray-100 p-4'>
+        <p className="text-center text-sm text-gray-500">
+          Copyright &copy; 2024. All rights reserved.
+        </p>
+      </footer>
+    </div>
+  );
+};
 
-export default layout
+export default Layout;

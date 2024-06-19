@@ -71,11 +71,13 @@ const DeleteComponent = ({commentId, postId, country, city, category, imageStora
   };
   return (
     <AlertDialog>
-      <AlertDialogTrigger>
-        <Button variant="ghost" size="icon">
-          <DeleteIcon />
-        </Button>
-      </AlertDialogTrigger>
+      <div>
+        <AlertDialogTrigger>
+          <Button variant="ghost" size="icon">
+            <DeleteIcon />
+          </Button>
+        </AlertDialogTrigger>
+      </div>
       <AlertDialogContent>
         <AlertDialogHeader>
           <AlertDialogTitle>

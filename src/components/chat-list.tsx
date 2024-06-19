@@ -55,26 +55,28 @@ const ChatList = () => {
   };
 
   return (
-    <section className="justify-center w-[20rem] bg-white h-[45rem] rounded-lg border border-gray-200 mr-4 overflow-y-auto">
-      <h2 className="flex font-bold border-b border-black items-center justify-center p-2">
-        Online Users
-      </h2>
+    <section className="justify-center w-[20rem] bg-white h-screen rounded-lg border border-gray-200 mr-4 overflow-y-auto">
       <div className="flex flex-col pt-2">
         {users && users.map((onlineUsers: Doc<"users">) => (
-          <div key={onlineUsers.clerkId}
-            className={`flex items-center gap-2 p-2 border-b border-gray-200 w-full cursor-pointer hover:bg-accent
-              ${selectedUser?.clerkId === onlineUsers.clerkId && 'bg-blue-200'}
-              ${getUserById && getUserById.chatReceivedFrom.includes(onlineUsers.clerkId) && 'bg-pink-200'}`}
-            onClick={() => startChat(onlineUsers)}
-          >
-            <Image src={onlineUsers.imageUrl} alt={onlineUsers.userName} width={30} height={30} className="rounded-full" />
-            <div className="flex w-full justify-between items-center">
-              <p className="overflow-hidden text-ellipsis whitespace-nowrap">{onlineUsers.userName}</p>
-              {getUserById && getUserById.chatReceivedFrom.includes(onlineUsers.clerkId) &&
-                <p className="flex items-center justify-center h-6 w-6 border rounded-full bg-white font-semibold text-xs">{countSpecificValue(getUserById.chatReceivedFrom, onlineUsers.clerkId)}</p>
-              }
+          onlineUsers.clerkId !== user?.id && (
+            <div
+              key={onlineUsers.clerkId}
+              className={`flex items-center gap-2 p-2 border-b border-gray-200 w-full cursor-pointer hover:bg-accent
+                ${selectedUser?.clerkId === onlineUsers.clerkId && 'bg-blue-200'}
+                ${getUserById && getUserById.chatReceivedFrom.includes(onlineUsers.clerkId) && 'bg-pink-200'}`}
+              onClick={() => startChat(onlineUsers)}
+            >
+              <Image src={onlineUsers.imageUrl} alt={onlineUsers.userName} width={30} height={30} className="rounded-full" />
+              <div className="flex w-full justify-between items-center">
+                <p className="overflow-hidden text-ellipsis whitespace-nowrap">{onlineUsers.userName}</p>
+                {getUserById && getUserById.chatReceivedFrom.includes(onlineUsers.clerkId) && (
+                  <p className="flex items-center justify-center h-6 w-6 border rounded-full bg-white font-semibold text-xs">
+                    {countSpecificValue(getUserById.chatReceivedFrom, onlineUsers.clerkId)}
+                  </p>
+                )}
+              </div>
             </div>
-          </div>
+          )
         ))}
         <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
         <PopoverTrigger asChild>
