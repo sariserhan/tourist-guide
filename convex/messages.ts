@@ -43,9 +43,21 @@ export const getDistinctMessageFromSender = query({
     return (messages.map((message) => message.senderId))
       .filter((value, index, self) => self.indexOf(value) === index);
   },
-
 });
 
+export const getUnreadMessageCountFromReceiver = query({
+  args: {
+    receiverId: v.string(),
+  },
+  handler: async (ctx, args) => {
+    const messages = await ctx.db
+    .query("messages")
+    .filter((q) => q.eq(q.field("receiverId"), args.receiverId))
+    .filter((q) => q.eq(q.field("read"), false))
+    .collect()
+    return messages.length;
+  },
+});
 
 export const listMessages = query({
   args: {
@@ -74,38 +86,6 @@ export const getMessagesFromUser = query({
       .collect();
   },
 });
-
-// export const addAnswer = mutation({
-//   args: {
-//     messageId: v.id("messages"),
-//     answerBy: v.string(),
-//     answerTo: v.string(),
-//     answerText: v.string(),
-//     answerTime: v.number(),
-//   },
-//   handler: async (ctx, args) => {
-//     const message = await ctx.db.get(args.messageId);
-//     if (!message) {
-//         throw new ConvexError("Message not found");
-//     }
-//     if (!message.answer) {
-//       return await ctx.db.patch(args.messageId,{
-//         answer: [{
-//           answerBy: args.answerBy,
-//           answerText: args.answerText,
-//           answerTime: args.answerTime,
-//         }]
-//       })
-//     } else {
-//       return await ctx.db.patch(args.messageId,{
-//         answer: [ ...message.answer,{
-//           answerBy: args.answerBy,
-//           answerText: args.answerText,
-//           answerTime: args.answerTime,
-//         }]
-//       })
-//     }},
-// });
 
 export const markAsRead = mutation({
   args: {

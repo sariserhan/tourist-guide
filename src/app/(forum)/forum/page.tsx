@@ -30,18 +30,19 @@ const Page = ({searchParams}: {searchParams: ForumCategoriesProps}) => {
           <Link href={
             !isUserLoggedIn() ? '/sign-in' : '/post?country=' + country + '&city=' + city + '&category=' + category
           }>
-            <Button className="-mt-1">
+            <Button>
               Publish New Post
             </Button>
           </Link>
         </section>
           <section className="space-y-5 mt-20 p-2 border">
             {city ? <h1 className="text-center text-4xl font-bold">{country} - {city}</h1>
-            : <h1 className="text-center text-4xl font-bold">{country}</h1>
+            :
+              <div className="flex items-center justify-center gap-4">
+                <h1 className="text-center text-4xl font-bold">{country}</h1>
+                <SearchCity country={country}/>
+              </div>
             }
-            <div className="flex items-center justify-center gap-1">
-              {!city && <SearchCity country={country}/>}
-            </div>
           </section>
           <section className="px-5">
             <BreadCrumb country={country} city={city} category={category}/>

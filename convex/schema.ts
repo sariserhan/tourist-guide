@@ -8,7 +8,7 @@ const schema = defineSchema({
         userName: v.string(),
         clerkId: v.string(),
         imageUrl: v.string(),
-        interestedCountries: v.array(v.string()),
+        chatReceivedFrom: v.array(v.string()),
         isOnline: v.boolean(),
     })
     .searchIndex('search_clerkId', { searchField: 'clerkId' }),
@@ -91,6 +91,7 @@ const schema = defineSchema({
             timestamp: v.number(),
         })),
     })
+
 });
 // console.log(schemaToMermaid(schema));
 

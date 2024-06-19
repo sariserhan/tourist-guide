@@ -10,6 +10,15 @@ export function isUserLoggedIn() {
   return auth().userId !== null
 }
 
+export function countSpecificValue<T>(arr: T[], value: T): number {
+  return arr.reduce((acc: number, currentValue: T) => {
+    if (currentValue === value) {
+      acc += 1;
+    }
+    return acc;
+  }, 0);
+}
+
 export async function getUserName() {
   const user = await currentUser()
   return user?.username || null

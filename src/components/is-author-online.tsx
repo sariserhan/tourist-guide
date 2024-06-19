@@ -1,10 +1,11 @@
 "use client";
 
 import { useQuery } from "convex/react"
-import { api } from "../../convex/_generated/api"
+import { api } from "@/../convex/_generated/api"
 
 const IsAuthorOnline = ({authorId}: {authorId: string}) => {
   const author = useQuery(api.users.getUserById, { clerkId: authorId })
+
   return (
     <div className="flex text-sm font-medium text-gray-900 dark:text-gray-50 items-center">
       {author?.isOnline ?
@@ -22,4 +23,4 @@ const IsAuthorOnline = ({authorId}: {authorId: string}) => {
   )
 }
 
-export default IsAuthorOnline
+export default IsAuthorOnline;

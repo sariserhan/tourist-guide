@@ -11,17 +11,22 @@ import { Button } from "./ui/button";
 import { useForm } from "react-hook-form";
 import { ShieldCloseIcon } from "lucide-react";
 import { useUser } from "@clerk/nextjs";
+import { countSpecificValue } from "@/lib/utils";
 
 const ChatList = () => {
   const { user } = useUser();
   const users = useQuery(api.users.getOnlineUsers)
   const [selectedUser, setSelectedUser] = useState<Doc<"users"> | null>(null);
   const [isPopoverOpen, setIsPopoverOpen] = useState(false);
-  const addChat = useMutation(api.chat.addChatMessage)
+  const createChat = useMutation(api.chat.addChatMessage)
+  const addChat = useMutation(api.users.addChatReceivedFrom)
+  const getUserById = useQuery(api.users.getUserById, { clerkId: user?.id || 'guest' })
+  const removeChatReceivedFrom = useMutation(api.users.removeChatReceivedFrom)
 
-  const startChat = (user: Doc<"users">) => {
-    setSelectedUser(user);
+  const startChat = (otherUser: Doc<"users">) => {
+    setSelectedUser(otherUser);
     setIsPopoverOpen(true);
+    removeChatReceivedFrom({ clerkId: user?.id!, senderId: otherUser.clerkId })
   };
 
   const closeChat = () => {
@@ -30,7 +35,8 @@ const ChatList = () => {
   };
 
   const handleSendMessage = async (message: string) => {
-    user && user.username && selectedUser && selectedUser.clerkId && await addChat({
+    user && user.username && selectedUser && selectedUser.clerkId &&
+    await createChat({
       senderId: user.id,
       receiverId: selectedUser?.clerkId,
       senderName: user.username,
@@ -41,28 +47,48 @@ const ChatList = () => {
         timestamp: Date.now(),
       }
     })
+    user && selectedUser &&
+    await addChat({
+      clerkId: selectedUser?.clerkId,
+      senderId: user?.id,
+    })
   };
+
   return (
     <section className="justify-center w-[20rem] bg-white h-[45rem] rounded-lg border border-gray-200 mr-4 overflow-y-auto">
-      <h2 className="flex font-bold border-b border-black items-center justify-center p-2">Online Users</h2>
+      <h2 className="flex font-bold border-b border-black items-center justify-center p-2">
+        Online Users
+      </h2>
       <div className="flex flex-col pt-2">
-        {users && users.map((user: Doc<"users">) => (
-          <div key={user.clerkId}
-            className="flex items-center gap-2 p-2 border-b border-gray-200 w-full cursor-pointer hover:bg-accent"
-            onClick={() => startChat(user)}
+        {users && users.map((onlineUsers: Doc<"users">) => (
+          <div key={onlineUsers.clerkId}
+            className={`flex items-center gap-2 p-2 border-b border-gray-200 w-full cursor-pointer hover:bg-accent
+              ${selectedUser?.clerkId === onlineUsers.clerkId && 'bg-blue-200'}
+              ${getUserById && getUserById.chatReceivedFrom.includes(onlineUsers.clerkId) && 'bg-pink-200'}`}
+            onClick={() => startChat(onlineUsers)}
           >
-            <Image src={user.imageUrl} alt={user.userName} width={30} height={30} className="rounded-full" />
-            <p className="overflow-hidden text-ellipsis whitespace-nowrap">{user.userName}</p>
+            <Image src={onlineUsers.imageUrl} alt={onlineUsers.userName} width={30} height={30} className="rounded-full" />
+            <div className="flex w-full justify-between items-center">
+              <p className="overflow-hidden text-ellipsis whitespace-nowrap">{onlineUsers.userName}</p>
+              {getUserById && getUserById.chatReceivedFrom.includes(onlineUsers.clerkId) &&
+                <p className="flex items-center justify-center h-6 w-6 border rounded-full bg-white font-semibold text-xs">{countSpecificValue(getUserById.chatReceivedFrom, onlineUsers.clerkId)}</p>
+              }
+            </div>
           </div>
         ))}
         <Popover open={isPopoverOpen} onOpenChange={setIsPopoverOpen}>
         <PopoverTrigger asChild>
-          <div />
+        <div />
         </PopoverTrigger>
         {selectedUser && (
           <PopoverContent className="w-[20rem]">
             {user &&
-              <ChatScreen recipient={selectedUser} senderId={user?.id} onSendMessage={handleSendMessage} onClose={closeChat} />
+              <ChatScreen
+                recipient={selectedUser}
+                senderId={user?.id}
+                onSendMessage={handleSendMessage}
+                onClose={closeChat}
+              />
             }
           </PopoverContent>
         )}
@@ -105,12 +131,26 @@ const ChatScreen = ({ recipient, senderId, onSendMessage, onClose }: ChatScreenP
     reset();
   };
 
+  const handleKeyDown = (event: React.KeyboardEvent<HTMLTextAreaElement>) => {
+    if (event.key === 'Enter' && !event.shiftKey) {
+      event.preventDefault();
+      handleSubmit(onSubmit)();
+    }
+  };
+
   return (
     <div className="chat-screen flex flex-col p-4 justify-center">
       <div className="flex items-between justify-between">
-        <h2 className="font-semibold text-lg mb-4 overflow-hidden text-ellipsis whitespace-nowrap">
-          Chat with {recipient.userName}
-        </h2>
+        <div className="flex gap-1 font-semibold text-lg mb-4 overflow-hidden text-ellipsis whitespace-nowrap">
+          <Image
+            src={recipient.imageUrl}
+            width={30}
+            height={30}
+            alt={recipient.userName}
+            className="rounded-full"
+          />
+          <p className="overflow-hidden text-ellipsis whitespace-nowrap">{recipient.userName}</p>
+        </div>
         <ShieldCloseIcon className="cursor-pointer" onClick={onClose} />
       </div>
       <div
@@ -139,6 +179,7 @@ const ChatScreen = ({ recipient, senderId, onSendMessage, onClose }: ChatScreenP
           {...register('message', { required: true })}
           placeholder="Type your message here..."
           className="w-full p-2 border rounded-lg mb-2"
+          onKeyDown={handleKeyDown}
         />
         <Button type="submit" className="w-full bg-blue-500 text-white p-2 rounded-lg">
           Send

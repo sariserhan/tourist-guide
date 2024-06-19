@@ -1,22 +1,22 @@
 import { ConvexError, v } from "convex/values";
-import { internalMutation, query } from "./_generated/server";
+import { internalMutation, mutation, query } from "./_generated/server";
 
 export const getUserById = query({
-  args: { clerkId: v.string() },
+  args: {
+    clerkId: v.string()
+  },
   handler: async (ctx, args) => {
+    if (args.clerkId === 'guest') {
+      return
+    }
     const user = await ctx.db
       .query("users")
       .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
       .unique();
 
-    if (!user) {
-      throw new ConvexError("User not found");
-    }
-
     return user;
   },
 });
-
 
 export const createUser = internalMutation({
   args: {
@@ -31,9 +31,25 @@ export const createUser = internalMutation({
       email: args.email,
       imageUrl: args.imageUrl,
       userName: args.userName,
-      interestedCountries: [],
+      chatReceivedFrom: [],
       isOnline: true,
     });
+  },
+});
+
+export const getChatReceivedFrom = query({
+  args: { clerkId: v.string() },
+  handler: async (ctx, args) => {
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
+      .unique();
+
+    if (!user) {
+      throw new ConvexError("User not found");
+    }
+
+    return user.chatReceivedFrom;
   },
 });
 
@@ -85,6 +101,48 @@ export const updateUserSession = internalMutation({
 
     await ctx.db.patch(user._id, {
       isOnline: args.isOnline,
+    });
+  },
+});
+
+export const addChatReceivedFrom = mutation({
+  args: {
+    clerkId: v.string(),
+    senderId: v.string()
+  },
+  async handler(ctx, args) {
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
+      .unique();
+
+    if (!user) {
+      throw new ConvexError("User not found");
+    }
+
+    await ctx.db.patch(user._id, {
+      chatReceivedFrom: [...user.chatReceivedFrom, args.senderId],
+    });
+  },
+});
+
+export const removeChatReceivedFrom = mutation({
+  args: {
+    clerkId: v.string(),
+    senderId: v.string()
+  },
+  async handler(ctx, args) {
+    const user = await ctx.db
+      .query("users")
+      .filter((q) => q.eq(q.field("clerkId"), args.clerkId))
+      .unique();
+
+    if (!user) {
+      throw new ConvexError("User not found");
+    }
+
+    await ctx.db.patch(user._id, {
+      chatReceivedFrom: user.chatReceivedFrom.filter((id) => id !== args.senderId),
     });
   },
 });

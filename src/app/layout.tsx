@@ -10,10 +10,11 @@ import {
   SignInButton,
   SignedIn,
   SignedOut,
-  UserButton
+  UserButton,
 } from '@clerk/nextjs'
 import Link from "next/link";
 import Messages from "@/components/messages";
+import { currentUser } from "@clerk/nextjs/server";
 
 const inter = Inter({ subsets: ["latin"] });
 
@@ -22,11 +23,12 @@ export const metadata: Metadata = {
   description: "Where you can learn and discuss about countries",
 };
 
-export default function RootLayout({
+export default async function RootLayout({
   children,
 }: Readonly<{
   children: React.ReactNode;
 }>) {
+  const user = await currentUser()
   return (
     <html lang="en">
       <body className={`${inter.className}`}>
@@ -46,7 +48,7 @@ export default function RootLayout({
             <SignedIn>
               <div className="flex items-center justify-center space-x-2">
                 <Link href="/message">
-                  <Messages />
+                  {user && <Messages userClerkId={user.id}/>}
                 </Link>
                 <UserButton />
               </div>

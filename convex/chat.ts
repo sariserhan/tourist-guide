@@ -1,6 +1,5 @@
 import { v } from "convex/values";
 import { mutation, query } from "./_generated/server";
-import { Id } from "./_generated/dataModel";
 
 export const addChatMessage = mutation({
   args: {
@@ -12,7 +11,7 @@ export const addChatMessage = mutation({
       senderName: v.string(),
       text: v.string(),
       timestamp: v.number(),
-      })
+    })
   },
   handler: async (ctx, args) => {
     const chats = await ctx.db.query("chat").collect();
@@ -32,7 +31,7 @@ export const addChatMessage = mutation({
       senderName: args.senderName,
       receiverName: args.receiverName,
       chattingUsers: [args.senderId, args.receiverId],
-      messages: [args.messages]
+      messages: [args.messages],
     });
   }
 });
