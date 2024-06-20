@@ -3,7 +3,7 @@ import { ForumCategoriesProps } from "@/lib/types";
 
 const ForumCategories = ({country, city, category}: ForumCategoriesProps) => {
     return (
-    <div className="rounded-lg border border-gray-200 bg-white p-4 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+    <div className="rounded-b-lg bg-white shadow-sm h-[30rem]">
         <nav className="space-y-1">
             <Link
                 className={category === "general" ?

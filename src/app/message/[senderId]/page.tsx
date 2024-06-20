@@ -20,7 +20,7 @@ const UserMessages = async ({params}: UserMessagesParams) => {
   const sortedArray = mergedArray && mergedArray.sort((a, b) => a._creationTime - b._creationTime);
 
   return (
-    <main className="flex flex-col items-center justify-center w-full my-auto mt-20">
+    <main className="flex flex-col items-center w-full my-auto mt-20 min-h-screen">
       {messagesReceived && <BreadCrumb messageFrom={messagesReceived[0].senderName} />}
       <div className="mt-2 w-3/4">
       {Array.isArray(sortedArray) && sortedArray.map((message) => (

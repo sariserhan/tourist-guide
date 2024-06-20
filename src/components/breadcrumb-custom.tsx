@@ -1,4 +1,3 @@
-import { ForumCategoriesProps } from '../lib/types';
 import {
     Breadcrumb,
     BreadcrumbItem,
@@ -8,10 +7,13 @@ import {
     BreadcrumbSeparator,
   } from "@/components/ui/breadcrumb"
 
-type BreadCrumbProps = ForumCategoriesProps & {
+type BreadCrumbProps = {
   title?: string;
   inbox?: boolean;
   messageFrom?: string;
+  country?: string;
+  city?: string;
+  category?: "general" | "cuisine-food" | "attractions-sightseeing" | "accommodation" | "transportation" | "language-communication" | "visa-entry" | "safety-health" | "currency-money" | "culture-customs" | "climate-weather" | "promotions";
 }
 
 export default function BreadCrumb({country, city, category, title, inbox, messageFrom}: BreadCrumbProps) {

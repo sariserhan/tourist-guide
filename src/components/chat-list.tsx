@@ -55,7 +55,7 @@ const ChatList = () => {
   };
 
   return (
-    <section className="justify-center w-[20rem] bg-white h-screen rounded-lg border border-gray-200 mr-4 overflow-y-auto">
+    <section className="justify-center w-[20rem] bg-white h-[30rem] rounded-b-lg border-b border-t border-gray-200 mr-4 overflow-y-auto">
       <div className="flex flex-col pt-2">
         {users && users.map((onlineUsers: Doc<"users">) => (
           onlineUsers.clerkId !== user?.id && (

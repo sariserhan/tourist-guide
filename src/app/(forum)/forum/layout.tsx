@@ -9,11 +9,6 @@ const Layout = ({ children }: { children: React.ReactNode }) => {
       <main className="flex-grow">
         {children}
       </main>
-      <footer className='flex justify-center items-center bg-gray-100 p-4'>
-        <p className="text-center text-sm text-gray-500">
-          Copyright &copy; 2024. All rights reserved.
-        </p>
-      </footer>
     </div>
   );
 };

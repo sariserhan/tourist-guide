@@ -6,8 +6,8 @@ import LikesCounter from './likes-counter';
 import PopoverMessage from "./popover-message";
 import IsAuthorOnline from "./is-author-online";
 import DeleteComponent from "./delete-component";
-import { Id } from "../../convex/_generated/dataModel";
-import { api } from "../../convex/_generated/api";
+import { Id } from "@/../convex/_generated/dataModel";
+import { api } from "@/../convex/_generated/api";
 import { Badge } from "./ui/badge";
 import { useUser } from "@clerk/nextjs";
 import { useQuery } from "convex/react";
@@ -51,15 +51,15 @@ const ForumCard = ({ country, category, city }: ForumCategoriesProps) => {
   const postsToShow = showAllPosts ? filteredPosts : filteredPosts.slice(-initialPostCount);
 
   return (
-    <>
+    <main className="justify-center font-bold bg-white w-full h-[85rem] rounded-lg border overflow-auto">
     {filteredPosts.length === 0 ? (
-      <div className="flex justify-center font-bold bg-white w-full h-screen rounded-lg border">No Post Yet</div>
+      <div className="flex justify-center font-bold bg-white w-full">No Post Yet</div>
       ) : (
       <>
       {newPostCount > 0 && !showAllPosts && (newPostCount !== initialPostCount) && (
         <div className="flex justify-center items-center">
           <Badge
-            className="-mt-[5rem] cursor-pointer"
+            className=" cursor-pointer"
             onClick={handleShowNewPosts}
             variant="outline"
           >
@@ -69,7 +69,7 @@ const ForumCard = ({ country, category, city }: ForumCategoriesProps) => {
       )}
       {postsToShow.map(post => (
         <div key={post._id} className="relative rounded-lg border border-gray-200 bg-white p-4 mb-2 shadow-sm dark:border-gray-800 dark:bg-gray-950">
-          <div className="flex items-center justify-between">
+          <div className="flex items-center justify-between border-b">
             <Link href={`/forum/${post._id}`}>
               <h2 className="text-lg text-wrap font-semibold hover:bg-accent hover:text-accent-foreground">{post.title}</h2>
             </Link>
@@ -126,7 +126,7 @@ const ForumCard = ({ country, category, city }: ForumCategoriesProps) => {
       ))}
     </>
   )}
-  </>
+  </main>
   )
 };
 

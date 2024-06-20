@@ -11,13 +11,10 @@ import getSymbolFromCurrency from 'currency-symbol-map'
 import { ScrollArea } from "./ui/scroll-area";
 import { StatsProps } from "@/lib/types";
 
-const Stats = ({stats}: {stats: StatsProps}) => {
-    const population = stats.population ? ((stats.population / 1e6).toFixed(2) + 'M') : null
-    const surface_area = stats.surface_area ? ((stats.surface_area / 1e6) > 1 ? (stats.surface_area / 1e6).toFixed(2) + 'M km²' : (stats.surface_area / 1e3).toFixed(2) + 'K km²') : null
-
+export const StatsLeft = ({stats}: {stats: StatsProps}) => {
     return (
         <div className="flex flex-1 justify-center w-[20rem]">
-        <div className="grid grid-cols-1 gap-2 justify-center ">
+        <div className="grid grid-cols-1 gap-2 justify-center w-full">
             {stats.name &&
             <article className="flex items-center gap-4 rounded-lg border border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
                 <span className="p-3 rounded-full border ">
@@ -94,20 +91,32 @@ const Stats = ({stats}: {stats: StatsProps}) => {
                 </div>
             </article>
             }
-
-            {stats.population && (stats.population > 0) &&
+            {stats.national_dish &&
             <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
-                <span className="p-3 rounded-full border text-lime-600">
-                    <FaPeopleGroup size={30}/>
+                <span className="p-3 rounded-full border text-orange-400">
+                    <IoFastFoodOutline size={30}/>
                 </span>
 
                 <div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">Population</p>
-                    <p className="text-xl font-medium text-gray-900 dark:text-white">{population}</p>
+                    <p className="text-sm text-gray-500 dark:text-gray-400">National Dish</p>
+                    <p className="text-xl font-medium text-gray-900 dark:text-white">{stats.national_dish}</p>
+
                 </div>
             </article>
             }
-            {stats.calling_code &&
+            </div>
+        </div>
+    )
+}
+
+export const StatsRight = ({stats}: {stats: StatsProps}) => {
+    const surface_area = stats.surface_area ? ((stats.surface_area / 1e6) > 1 ? (stats.surface_area / 1e6).toFixed(2) + 'M km²' : (stats.surface_area / 1e3).toFixed(2) + 'K km²') : null
+    const population = stats.population ? ((stats.population / 1e6).toFixed(2) + 'M') : null
+
+    return (
+        <div className="flex flex-1 justify-center w-[20rem]">
+        <div className="grid grid-cols-1 gap-2 justify-center w-full">
+        {stats.calling_code &&
             <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
                 <span className="p-3 rounded-full border text-purple-400">
                     <FaPhoneFlip size={30}/>
@@ -131,16 +140,15 @@ const Stats = ({stats}: {stats: StatsProps}) => {
                 </div>
             </article>
             }
-            {stats.national_dish &&
+            {stats.population && (stats.population > 0) &&
             <article className="flex items-center gap-4 rounded-lg border  border-gray-200 p-6 dark:border-slate-800 dark:bg-black bg-white">
-                <span className="p-3 rounded-full border text-orange-400">
-                    <IoFastFoodOutline size={30}/>
+                <span className="p-3 rounded-full border text-lime-600">
+                    <FaPeopleGroup size={30}/>
                 </span>
 
                 <div>
-                    <p className="text-sm text-gray-500 dark:text-gray-400">National Dish</p>
-                    <p className="text-xl font-medium text-gray-900 dark:text-white">{stats.national_dish}</p>
-
+                    <p className="text-sm text-gray-500 dark:text-gray-400">Population</p>
+                    <p className="text-xl font-medium text-gray-900 dark:text-white">{population}</p>
                 </div>
             </article>
             }
@@ -209,5 +217,3 @@ const Stats = ({stats}: {stats: StatsProps}) => {
         </div>
     )
 }
-
-export default Stats

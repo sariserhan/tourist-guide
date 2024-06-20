@@ -46,13 +46,13 @@ const Page = ({searchParams}: {searchParams: ForumCategoriesProps}) => {
             <BreadCrumb country={country} city={city} category={category}/>
           </section>
           <div className="flex flex-1 gap-2 py-8">
-              <SidebarComponent side={"left"} country={country} city={city} category={category} statsData={statsData}/>
+              <SidebarComponent side={"left"} country={country} city={city} category={category} statsData={statsData} />
             <div className="flex w-full space-x-2">
               <section className="w-full">
                 <ForumCard country={country} category={category} city={city}/>
               </section>
               <section>
-                <SidebarComponent side={"right"} />
+                <SidebarComponent side={"right"} country={country} city={city} category={category} statsData={statsData} />
               </section>
             </div>
           </div>

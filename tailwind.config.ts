@@ -18,6 +18,12 @@ const config = {
       },
     },
     extend: {
+      from: {
+        backgroundPosition: "0 0",
+      },
+      to: {
+        backgroundPosition: "-200% 0",
+      },
       colors: {
         border: "hsl(var(--border))",
         input: "hsl(var(--input))",

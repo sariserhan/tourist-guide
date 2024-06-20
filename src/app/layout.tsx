@@ -57,6 +57,11 @@ export default async function RootLayout({
             {children}
           <Toaster />
         </ConvexClientProvider>
+        <footer className='flex justify-center items-center bg-gray-100 p-4'>
+          <p className="text-center text-sm text-gray-500">
+            Copyright &copy; 2024. All rights reserved.
+          </p>
+        </footer>
       </body>
     </html>
   );

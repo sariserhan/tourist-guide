@@ -1,13 +1,13 @@
 "use client";
 
 import ChatList from './chat-list';
-import React, { useState } from 'react';
-import { SidebarIcon, XIcon } from 'lucide-react'; // Adjust the import path as necessary
-import { Button } from './ui/button';
-import { HiOutlineChatAlt } from "react-icons/hi";
-import Stats from './stats';
 import ForumCategories from './forum-categories';
+import React, { useState } from 'react';
+import { Button } from './ui/button';
 import { StatsProps } from "@/lib/types";
+import { HiOutlineChatAlt } from "react-icons/hi";
+import { SidebarIcon, XIcon } from 'lucide-react'; // Adjust the import path as necessary
+import { StatsLeft, StatsRight } from './stats';
 
 interface SidebarProps {
   side: 'left' | 'right';
@@ -38,18 +38,16 @@ const SidebarComponent = ({ side, country, city, category, statsData }: SidebarP
           </Button>
         )}
         <div
-          className={`fixed ${side === 'left' ? 'left-0' : 'right-0'} h-screen bg-white border rounded-lg transition-transform ${
+          className={`fixed ${side === 'left' ? 'left-0' : 'right-0'} h-screen bg-white border-t border-b rounded-lg transition-transform ${
             isOpen ? 'translate-x-0' : side === 'left' ? '-translate-x-full' : 'translate-x-full'
           }`}
           style={{ width: '20rem' }}
         >
           {isOpen && (
             <div className="flex p-2 justify-between">
-
-              <div className='flex justify-center items-center text-lg font-semibold'>
+              <div className='flex items-center text-lg font-semibold w-full'>
                 {side === "right" ? "Online Users" : "Categories"}
               </div>
-
               <div className='justify-end items-center'>
                 <XIcon className="cursor-pointer" onClick={toggleSidebar} />
               </div>
@@ -57,11 +55,14 @@ const SidebarComponent = ({ side, country, city, category, statsData }: SidebarP
           )}
           <div>
             {side === "right" ?
-              <ChatList />
+              <section className="flex flex-col gap-2 w-full bg-gray-100">
+                <ChatList />
+                {statsData && <StatsRight stats={statsData}/>}
+              </section>
             :
-            <section className="flex flex-col gap-2 w-[20rem]">
+            <section className="flex flex-col gap-2 w-full bg-gray-100">
               {country && category && <ForumCategories country={country} city={city || ""} category={category}/>}
-              {statsData && <Stats stats={statsData}/>}
+              {statsData && <StatsLeft stats={statsData}/>}
             </section>
             }
           </div>
