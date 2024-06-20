@@ -19,8 +19,8 @@ import { currentUser } from "@clerk/nextjs/server";
 const inter = Inter({ subsets: ["latin"] });
 
 export const metadata: Metadata = {
-  title: "Country Forum",
-  description: "Where you can learn and discuss about countries",
+  title: "NationChatter",
+  description: "Learn and discuss about countries from locals",
 };
 
 export default async function RootLayout({
