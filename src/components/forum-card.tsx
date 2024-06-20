@@ -23,7 +23,7 @@ const ForumCard = ({ country, category, city }: ForumCategoriesProps) => {
   const [initialPostCount, setInitialPostCount] = useState(0);
   const [newPostCount, setNewPostCount] = useState(0);
   const [showAllPosts, setShowAllPosts] = useState(false);
-  const filteredPosts = useQuery(api.posts.listPosts, { country, city, category });
+  const filteredPosts = useQuery(api.posts.listPosts, { country, city: city ?? "", category });
 
   useEffect(() => {
     if (filteredPosts) {
@@ -51,7 +51,7 @@ const ForumCard = ({ country, category, city }: ForumCategoriesProps) => {
   const postsToShow = showAllPosts ? filteredPosts : filteredPosts.slice(-initialPostCount);
 
   return (
-    <main className="justify-center font-bold bg-white w-full h-[85rem] rounded-lg border overflow-auto">
+    <main className="justify-center font-bold bg-white w-full h-[85rem] rounded-lg border overflow-y-auto overflow-x-hidden">
     {filteredPosts.length === 0 ? (
       <div className="flex justify-center font-bold bg-white w-full">No Post Yet</div>
       ) : (
@@ -68,7 +68,7 @@ const ForumCard = ({ country, category, city }: ForumCategoriesProps) => {
         </div>
       )}
       {postsToShow.map(post => (
-        <div key={post._id} className="relative rounded-lg border border-gray-200 bg-white p-4 mb-2 shadow-sm dark:border-gray-800 dark:bg-gray-950">
+        <div key={post._id} className="relative rounded-lg border border-gray-200 bg-white p-4 mb-2 shadow-sm max-w-full">
           <div className="flex items-center justify-between border-b">
             <Link href={`/forum/${post._id}`}>
               <h2 className="text-lg text-wrap font-semibold hover:bg-accent hover:text-accent-foreground">{post.title}</h2>

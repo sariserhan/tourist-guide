@@ -23,10 +23,12 @@ const Page = ({searchParams}: {searchParams: ForumCategoriesProps}) => {
   return (
     <SelectedCountryProvider>
       {country ?
-        <main className="flex min-h-screen flex-col backdrop-filter backdrop-blur-xl">
+        <main className="flex min-h-screen flex-col backdrop-filter backdrop-blur-xl overflow-hidden">
           <section className='absolute right-[7rem] top-7 z-50'>
           <Link href={
-            !isUserLoggedIn() ? '/sign-in' : '/post?country=' + country + '&city=' + city + '&category=' + category
+            !isUserLoggedIn() ? '/sign-in' :
+            city ? '/post?country=' + country + '&city=' + city + '&category=' + category
+            : '/post?country=' + country + '&category=' + category
           }>
             <Button>
               Publish New Post

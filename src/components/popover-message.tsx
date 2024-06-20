@@ -22,7 +22,7 @@ interface PopoverMessageProps {
   authorImageUrl: string;
   about: {
     country: string;
-    city: string;
+    city?: string;
     category: string;
   }
 }

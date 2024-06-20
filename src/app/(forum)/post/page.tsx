@@ -47,7 +47,7 @@ const Post = ({searchParams}: {searchParams: ForumCategoriesProps}) => {
       title,
       article,
       country,
-      city,
+      city: city ?? "",
       category,
       imageUrls,
       imageStorageIds,
@@ -55,7 +55,10 @@ const Post = ({searchParams}: {searchParams: ForumCategoriesProps}) => {
     toast({
       description: "Article posted successfully",
     })
-    router.push('/forum?country=' + country + '&city=' + city + '&category=' + category);
+    city !== 'undefined' ?
+      router.push('/forum?country=' + country  + '&category=' + category)
+      :
+      router.push('/forum?country=' + country  + '&category=' + category + '&city=' + city);
     router.refresh();
   };
 
@@ -67,7 +70,7 @@ const Post = ({searchParams}: {searchParams: ForumCategoriesProps}) => {
             <h2 className="font-semibold pb-5">
                 Country: <span className="font-normal">{country}</span><br />
               {
-                city.length > 0 &&
+                city && city.length > 0 &&
                 <p>
                   City: <span className="font-normal">{city}</span>
                 </p>

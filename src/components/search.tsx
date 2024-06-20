@@ -36,7 +36,7 @@ export function SearchCountry() {
 
     const onSubmit = (e: React.FormEvent<HTMLFormElement>) => {
         e.preventDefault();
-        router.push(`/forum?country=${selectedCountry}&category=general&city=`);
+        router.push(`/forum?country=${selectedCountry}&category=general`);
     };
 
     return (

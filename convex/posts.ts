@@ -7,7 +7,7 @@ export const addPost = mutation({
         title: v.string(),
         article: v.string(),
         country: v.string(),
-        city: v.string(),
+        city: v.optional(v.string()),
         category: v.string(),
         imageUrls: v.optional(v.array(v.string())),
         imageStorageIds: v.optional(v.array(v.id("_storage"))),
@@ -30,7 +30,7 @@ export const addPost = mutation({
             country: args.country,
             imageUrls: args.imageUrls,
             imageStorageIds: args.imageStorageIds,
-            city: args.city,
+            city: args.city ?? "",
             category: args.category,
             authorName: user[0].userName,
             authorId: user[0].clerkId,
@@ -80,7 +80,7 @@ export const listPosts = query({
         return await ctx.db
         .query("posts")
         .filter((q) => q.eq(q.field("country"), args.country))
-        .filter((q) => q.eq(q.field("city"), args.city))
+        .filter((q) => q.eq(q.field("city"), args.city ?? ""))
         .filter((q) => q.eq(q.field("category"), args.category))
         .order("desc")
         .collect();

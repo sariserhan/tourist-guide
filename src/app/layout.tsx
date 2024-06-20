@@ -47,7 +47,7 @@ export default async function RootLayout({
             </SignedOut>
             <SignedIn>
               <div className="flex items-center justify-center space-x-2">
-                <Link href="/message">
+                <Link href="/message" className="">
                   {user && <Messages userClerkId={user.id}/>}
                 </Link>
                 <UserButton />

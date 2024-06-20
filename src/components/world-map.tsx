@@ -32,7 +32,6 @@ const WorldMap = () => {
       setSelectedCountry(country);
     }
 
-
   return (
     <Layout image="url('/ocean2.jpg')">
       <section id="home-1" className='flex flex-col h-[70rem] items-center justify-center backdrop-filter backdrop-blur-xl'>

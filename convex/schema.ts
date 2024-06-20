@@ -20,7 +20,7 @@ const schema = defineSchema({
         imageStorageIds: v.optional(v.array(v.id("_storage"))),
         likes: v.number(),
         country: v.string(),
-        city: v.string(),
+        city: v.optional(v.string()),
         category: v.string(),
         authorName: v.string(),
         authorId: v.string(),
